@@ -1,0 +1,35 @@
+Wunderlist\Entity\Membership:
+  exclusion_policy: ALL
+  properties:
+    id:
+      expose: true
+      type: string
+      serialized_name: id
+    createdAt:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: created_at
+    userID:
+      expose: true
+      type: string
+      serialized_name: user_id
+    listID:
+      expose: true
+      type: string
+      serialized_name: list_id
+    state:
+      expose: true
+      type: string
+      serialized_name: state
+    type:
+      expose: true
+      type: string
+      serialized_name: type
+    owner:
+      expose: true
+      type: string
+      serialized_name: owner
+    muted:
+      expose: true
+      type: string
+      serialized_name: muted

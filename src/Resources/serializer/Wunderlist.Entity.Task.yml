@@ -1,0 +1,51 @@
+Wunderlist\Entity\Task:
+  exclusion_policy: ALL
+  properties:
+    id:
+      expose: true
+      type: integer
+      serialized_name: id
+    assigneeID:
+      expose: true
+      type: integer
+      serialized_name: assignee_id
+    createdAt:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: created_at
+    createdByID:
+      expose: true
+      type: integer
+      serialized_name: created_by_id
+    dueDate:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: dueDate
+    listID:
+      expose: true
+      type: integer
+      serialized_name: list_id
+    revision:
+      expose: true
+      type: string
+      serialized_name: revision
+    starred:
+      expose: true
+      type: string
+      serialized_name: starred
+    title:
+      expose: true
+      type: string
+      serialized_name: title
+    completedAt:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: completed_at
+    completedByID:
+      expose: true
+      type: integer
+      serialized_name: completed_by_id
+    completed:
+      expose: true
+      type: boolean
+      serialized_name: completed

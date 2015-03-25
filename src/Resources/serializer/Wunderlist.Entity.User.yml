@@ -1,0 +1,23 @@
+Wunderlist\Entity\User:
+  exclusion_policy: ALL
+  properties:
+    id:
+      expose: true
+      type: string
+      serialized_name: id
+    createdAt:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: created_at
+    name:
+      expose: true
+      type: string
+      serialized_name: name
+    email:
+      expose: true
+      type: string
+      serialized_name: email
+    revision:
+      expose: true
+      type: string
+      serialized_name: revision

@@ -1,0 +1,44 @@
+{
+  "name": "italolelis/wunderlist",
+  "description": "Unofficial Wunderlist SDK",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "wunderlist",
+    "api",
+    "sdk"
+  ],
+  "homepage": "https://github.com/italolelis/wunderlist",
+  "authors": [
+    {
+      "name": "Ítalo Lelis de Vietro",
+      "email": "italolelis@gmail.com"
+    }
+  ],
+  "require": {
+    "nesbot/carbon": "~1.17",
+    "easyframework/collections": "4.0.*@dev",
+    "guzzlehttp/guzzle": "~5.2",
+    "league/oauth2-client": "~0.10",
+    "symfony/http-foundation": "~2.6",
+    "symfony/property-access": "~2.6",
+    "jms/serializer": "~0.16",
+    "doctrine/common": "~2.4",
+    "filp/whoops": "~1.1"
+  },
+  "require-dev": {
+    "php": ">=5.4.0",
+    "phpunit/phpunit": "~4.5",
+    "symfony/var-dumper": "~2.6."
+  },
+  "autoload": {
+    "psr-4": {
+      "Wunderlist\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Wunderlist\\": "tests/"
+    }
+  }
+}
