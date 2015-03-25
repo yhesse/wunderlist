@@ -26,8 +26,7 @@ class MembershipService extends ApiClient
     public function mine()
     {
         $user = $this->userService->current();
-        $data = $this->forUser($user);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->forUser($user);
     }
 
     public function addMemberToList($list, $user, $muted = false)

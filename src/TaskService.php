@@ -20,8 +20,7 @@ class TaskService extends ApiClient
 
     public function all(WList $list)
     {
-        $data = $this->forList($list);;
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->forList($list);
     }
 
     public function completed(WList $list)
