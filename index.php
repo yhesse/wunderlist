@@ -19,15 +19,25 @@ $wunderlist = new \Wunderlist\Wunderlist([
 $lists = $wunderlist->getLists();
 $memberships = $wunderlist->getMemberships();
 $tasks = $wunderlist->getTasks();
+$subtasks = $wunderlist->getSubtasks();
 
-$list = $lists->getID(148646750);
+$list = $lists->getID(154389739);
+$task = $tasks->getID(1063439979);
+
+//$task = new \Wunderlist\Entity\Task();
+//$task
+//    ->setListID($list->getId())
+//    ->setTitle('Test Hello');
+//
+
+//$subtask = new \Wunderlist\Entity\Subtask();
+//$subtask->setTaskID($task->getId())
+//    ->setTitle('Subtask Test');
+
 dump(
-    $memberships->mine(),
-    $tasks->all($list)
 //    $lists->all(),
-//    $lists->get(148646750),
-//    $lists->getTaskCounts(148646750)
-//    $wunderlist->createList([
-//        'title' => 'Test SDK'
-//    ])
+//    $memberships->mine(),
+    $lists->delete($lists->getID(154205231)),
+    $tasks->forList($list, true),
+    $tasks->allWithSubtasks($list)
 );

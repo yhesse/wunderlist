@@ -2,11 +2,12 @@
 
 namespace Wunderlist;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\WList;
 
-class TaskService extends ApiClient
+class TaskService extends AbstractService
 {
     protected $userService;
     protected $baseUrl = 'tasks';
@@ -16,6 +17,18 @@ class TaskService extends ApiClient
     {
         parent::__construct($client, $params);
         $this->userService = new UserService($client, $params);
+        $this->subtaskService = new SubtaskService($client, $params);
+    }
+
+    public function forList(WList $list, $completed = false)
+    {
+        $data = [
+            'list_id' => $list->getId(),
+            'completed' => $completed
+        ];
+
+        $data = $this->getItemsForAttributes($this->getBaseUrl(), $data);
+        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
     }
 
     public function all(WList $list)
@@ -23,38 +36,13 @@ class TaskService extends ApiClient
         return $this->forList($list);
     }
 
-    public function completed(WList $list)
+    public function allWithSubtasks(WList $list)
     {
-        $tasks = $this->forList($list);
-        $data = $tasks->filter(function (Task $task) {
-            return $task->isCompleted() === true;
+        $tasks = new ArrayCollection($this->all($list));
+        $tasksWithSubtaks = $tasks->map(function (Task $task) {
+            return $task->setSubtasks($this->subtaskService->forTask($task));
         });
 
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
-    }
-
-    public function uncompleted(WList $list)
-    {
-        $tasks = $this->forList($list);
-        $data = $tasks->filter(function (Task $task) {
-            return $task->isCompleted() === false;
-        });
-
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
-    }
-
-    /**
-     * Create a task.
-     * @param Task $data Task creation data.
-     * @return mixed
-     */
-    public function create(Task $data)
-    {
-        return $this->post($this->getBaseUrl(), $data);
-    }
-
-    public function update(Task $data)
-    {
-        return $this->patch('lists', $data->getId(), $data);
+        return $tasksWithSubtaks;
     }
 }

@@ -5,7 +5,7 @@ namespace Wunderlist;
 use GuzzleHttp\Client;
 use Wunderlist\Entity\Membership;
 
-class MembershipService extends ApiClient
+class MembershipService extends AbstractService
 {
     protected $userService;
     protected $baseUrl = 'memberships';

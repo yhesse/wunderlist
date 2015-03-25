@@ -2,14 +2,15 @@
 
 namespace Wunderlist;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
+use JMS\Serializer\SerializerBuilder;
+use Wunderlist\Entity\IdentifiableInterface;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\User;
 use Wunderlist\Entity\WList;
 
-abstract class ApiClient
+abstract class AbstractService
 {
     /**
      * The service's base path. For example 'tasks' will become 'https://a.wunderlist.com/api/v1/tasks' when an HTTP request is made.
@@ -36,7 +37,7 @@ abstract class ApiClient
     public function __construct(Client $client, $params)
     {
         $this->client = $client;
-        $this->serializer = \JMS\Serializer\SerializerBuilder::create()
+        $this->serializer = SerializerBuilder::create()
             ->setCacheDir(__DIR__ . '/../var/cache')
             ->addMetadataDir(__DIR__ . '/Resources/serializer')
             ->build();
@@ -65,24 +66,42 @@ abstract class ApiClient
         return $this->client->get($resource, $options)->getBody()->getContents();
     }
 
-    protected function post($resource, $data, $options = [])
+    public function create($entity, $options = [])
     {
-        $options['json'] = $data;
-        $result = $this->client->post($resource, $options)->json();
+        $options['body'] = $this->serializer->serialize($entity, 'json');
+        $options['headers'] = [
+            'Content-Type' => 'application/json'
+        ];
+        $result = $this->client->post($this->getBaseUrl(), $options)->getBody()->getContents();
         return $this->deserialize($result, $this->type);
     }
 
-    protected function patch($resource, $id, $data, $options = [])
+    public function update(IdentifiableInterface $entity, $options = [])
     {
-        $resource .= '/' . $id;
-        $options['json'] = $data;
-        $result = $this->client->patch($resource, $options)->json();
+        $options['body'] = $this->serializer->serialize($entity, 'json');
+        $options['headers'] = [
+            'Content-Type' => 'application/json'
+        ];
+        $result = $this->client->put($this->getBaseUrl() . '/' . $entity->getId(), $options)->getBody()->getContents();
         return $this->deserialize($result, $this->type);
     }
 
-    public function delete($id, $options = [])
+    public function patch($id, $data, $options = [])
     {
-        return $this->client->delete($this->getBaseUrl() . '/' . $id, $options)->json();
+        $options['json'] = $data;
+        $options['headers'] = [
+            'Content-Type' => 'application/json'
+        ];
+        $result = $this->client->patch($this->getBaseUrl() . '/' . $id, $options)->getBody()->getContents();
+        return $this->deserialize($result, $this->type);
+    }
+
+    public function delete(IdentifiableInterface $entity, $options = [])
+    {
+        $options['query'] = [
+            'revision' => $entity->getRevision()
+        ];
+        return $this->client->delete($this->getBaseUrl() . '/' . $entity->getId(), $options)->json();
     }
 
     public function getID($id)
@@ -94,6 +113,13 @@ abstract class ApiClient
     protected function getItemsForAttribute($url, $attribute, $value)
     {
         $data[$attribute] = $value;
+        return $this->get($url, [
+            'query' => $data
+        ]);
+    }
+
+    protected function getItemsForAttributes($url, $data)
+    {
         return $this->get($url, [
             'query' => $data
         ]);

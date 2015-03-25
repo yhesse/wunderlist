@@ -2,40 +2,42 @@
 
 namespace Wunderlist\Entity;
 
-class Task
+use Doctrine\Common\Collections\ArrayCollection;
+
+class Task extends AbstractTask
 {
-    protected $id;
+    /**
+     * @var integer
+     */
     protected $assigneeID;
-    protected $createdAt;
-    protected $createdByID;
+
+    /**
+     * @var \DateTime
+     */
     protected $dueDate;
+
+    /**
+     * @var integer
+     */
     protected $listID;
-    protected $revision;
+
+    /**
+     * @var boolean
+     */
     protected $starred;
-    protected $title;
-    protected $completedAt;
-    protected $completedByID;
-    protected $completed;
 
     /**
-     * @return mixed
+     * @var ArrayCollection
      */
-    public function getId()
+    protected $subtasks;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->subtasks = new ArrayCollection();
     }
 
     /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return mixed
+     * @return integer
      */
     public function getAssigneeID()
     {
@@ -43,7 +45,8 @@ class Task
     }
 
     /**
-     * @param mixed $assigneeID
+     * @param integer $assigneeID
+     * @return $this
      */
     public function setAssigneeID($assigneeID)
     {
@@ -52,7 +55,7 @@ class Task
     }
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getListID()
     {
@@ -60,7 +63,8 @@ class Task
     }
 
     /**
-     * @param mixed $listID
+     * @param integer $listID
+     * @return $this
      */
     public function setListID($listID)
     {
@@ -69,41 +73,7 @@ class Task
     }
 
     /**
-     * @return mixed
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param mixed $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCreatedByID()
-    {
-        return $this->createdByID;
-    }
-
-    /**
-     * @param mixed $createdByID
-     */
-    public function setCreatedByID($createdByID)
-    {
-        $this->createdByID = $createdByID;
-        return $this;
-    }
-
-    /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getDueDate()
     {
@@ -111,33 +81,17 @@ class Task
     }
 
     /**
-     * @param mixed $dueDate
+     * @param \DateTime $dueDate
+     * @return $this
      */
-    public function setDueDate($dueDate)
+    public function setDueDate(\DateTime $dueDate)
     {
         $this->dueDate = $dueDate;
         return $this;
     }
 
     /**
-     * @return mixed
-     */
-    public function getRevision()
-    {
-        return $this->revision;
-    }
-
-    /**
-     * @param mixed $revision
-     */
-    public function setRevision($revision)
-    {
-        $this->revision = $revision;
-        return $this;
-    }
-
-    /**
-     * @return mixed
+     * @return boolean
      */
     public function getStarred()
     {
@@ -145,7 +99,8 @@ class Task
     }
 
     /**
-     * @param mixed $starred
+     * @param boolean $starred
+     * @return $this
      */
     public function setStarred($starred)
     {
@@ -154,70 +109,40 @@ class Task
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
-    public function getTitle()
+    public function getSubtasks()
     {
-        return $this->title;
+        return $this->subtasks;
     }
 
     /**
-     * @param mixed $title
+     * @param ArrayCollection $subtasks
+     * @return $this
      */
-    public function setTitle($title)
+    public function setSubtasks($subtasks)
     {
-        $this->title = $title;
+        $this->subtasks = $subtasks;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @param Subtask $subtask
+     * @return $this
      */
-    public function getCompletedAt()
+    public function addSubtask(Subtask $subtask)
     {
-        return $this->completedAt;
-    }
-
-    /**
-     * @param mixed $completedAt
-     */
-    public function setCompletedAt($completedAt)
-    {
-        $this->completedAt = $completedAt;
+        $this->subtasks->add($subtask);
         return $this;
     }
 
     /**
-     * @return mixed
+     * @param Subtask $subtask
+     * @return $this
      */
-    public function getCompletedByID()
+    public function removeSubtask(Subtask $subtask)
     {
-        return $this->completedByID;
-    }
-
-    /**
-     * @param mixed $completedByID
-     */
-    public function setCompletedByID($completedByID)
-    {
-        $this->completedByID = $completedByID;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function isCompleted()
-    {
-        return $this->completed;
-    }
-
-    /**
-     * @param mixed $completed
-     */
-    public function setCompleted($completed)
-    {
-        $this->completed = $completed;
+        $this->subtasks->remove($subtask);
         return $this;
     }
 }

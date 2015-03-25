@@ -3,7 +3,7 @@ Wunderlist\Entity\WList:
   properties:
     id:
       expose: true
-      type: string
+      type: integer
       serialized_name: id
     createdAt:
       expose: true
@@ -23,5 +23,5 @@ Wunderlist\Entity\WList:
       serialized_name: type
     revision:
       expose: true
-      type: string
+      type: integer
       serialized_name: revision

@@ -3,7 +3,7 @@ Wunderlist\Entity\User:
   properties:
     id:
       expose: true
-      type: string
+      type: integer
       serialized_name: id
     createdAt:
       expose: true
@@ -19,5 +19,5 @@ Wunderlist\Entity\User:
       serialized_name: email
     revision:
       expose: true
-      type: string
+      type: integer
       serialized_name: revision

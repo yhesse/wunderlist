@@ -3,32 +3,15 @@
 namespace Wunderlist\Entity;
 
 
-class WList
+class WList implements IdentifiableInterface
 {
-    protected $id;
+    use Revisionable,
+        Identifiable;
+
     protected $createdAt;
     protected $title;
     protected $listType;
     protected $type;
-    protected $revision;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
 
     /**
      * @return mixed
@@ -99,24 +82,6 @@ class WList
     public function setType($type)
     {
         $this->type = $type;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRevision()
-    {
-        return $this->revision;
-    }
-
-    /**
-     * @param mixed $revision
-     * @return $this
-     */
-    public function setRevision($revision)
-    {
-        $this->revision = $revision;
         return $this;
     }
 }

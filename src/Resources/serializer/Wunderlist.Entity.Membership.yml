@@ -3,7 +3,7 @@ Wunderlist\Entity\Membership:
   properties:
     id:
       expose: true
-      type: string
+      type: integer
       serialized_name: id
     createdAt:
       expose: true
@@ -33,3 +33,7 @@ Wunderlist\Entity\Membership:
       expose: true
       type: string
       serialized_name: muted
+    revision:
+      expose: true
+      type: integer
+      serialized_name: revision

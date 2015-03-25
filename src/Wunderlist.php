@@ -9,6 +9,8 @@ class Wunderlist
     protected $listService;
     protected $membershipService;
     protected $taskService;
+    protected $subtaskService;
+
     protected $apiUrl = 'https://a.wunderlist.com/api/{version}/';
     protected $version = 'v1';
 
@@ -21,6 +23,7 @@ class Wunderlist
         $this->listService = new ListService($client, $params);
         $this->membershipService = new MembershipService($client, $params);
         $this->taskService = new TaskService($client, $params);
+        $this->subtaskService = new SubtaskService($client, $params);
     }
 
     protected function createGuzzle($clientID, $accessToken)
@@ -53,6 +56,14 @@ class Wunderlist
     public function getMemberships()
     {
         return $this->membershipService;
+    }
+
+    /**
+     * @return SubtaskService
+     */
+    public function getSubtasks()
+    {
+        return $this->subtaskService;
     }
 
     public function getToday()

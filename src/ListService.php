@@ -5,7 +5,7 @@ namespace Wunderlist;
 use GuzzleHttp\Client;
 use Wunderlist\Entity\WList;
 
-class ListService extends ApiClient
+class ListService extends AbstractService
 {
     protected $membershipService;
     protected $baseUrl = 'lists';
@@ -51,31 +51,16 @@ class ListService extends ApiClient
         ])->json();
     }
 
-    /**
-     * Create a list.
-     * @param WList $data List creation data.
-     * @return mixed
-     */
-    public function create(WList $data)
+    public function makePublic(WList $data)
     {
-        return $this->post($this->getBaseUrl(), $data);
-    }
-
-    public function update(WList $data)
-    {
-        return $this->patch('lists', $data->getId(), $data);
-    }
-
-    public function makePublic($id)
-    {
-        return $this->patch('lists', $id, [
+        return $this->patch($this->getBaseUrl(), $data->getId(), [
             'public' => true
         ]);
     }
 
-    public function makePrivate($id)
+    public function makePrivate(WList $data)
     {
-        return $this->patch('lists', $id, [
+        return $this->patch($this->getBaseUrl(), $data->getId(), [
             'public' => false
         ]);
     }

@@ -2,32 +2,14 @@
 
 namespace Wunderlist\Entity;
 
-
-class User
+class User implements IdentifiableInterface
 {
-    protected $id;
+    use Revisionable,
+        Identifiable;
+
     protected $name;
     protected $email;
     protected $createdAt;
-    protected $revision;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
 
     /**
      * @return mixed
@@ -80,24 +62,6 @@ class User
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRevision()
-    {
-        return $this->revision;
-    }
-
-    /**
-     * @param mixed $revision
-     * @return $this
-     */
-    public function setRevision($revision)
-    {
-        $this->revision = $revision;
         return $this;
     }
 }

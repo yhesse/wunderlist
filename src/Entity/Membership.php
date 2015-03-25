@@ -3,33 +3,17 @@
 namespace Wunderlist\Entity;
 
 
-class Membership
+class Membership implements IdentifiableInterface
 {
-    protected $id;
+    use Revisionable,
+        Identifiable;
+
     protected $userID;
     protected $listID;
     protected $state;
     protected $type;
     protected $owner;
     protected $muted;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
 
     /**
      * @return mixed
