@@ -62,6 +62,7 @@ Just remeber that this procedure is already done by our SDK, this is just an sta
 if you want to use it.
 
 .. code-block:: php
+
     //We create a provider which can handle the authentication procedure
     $provider = new \Wunderlist\Provider\Wunderlist([
         'clientId' => 'yourClientId',
