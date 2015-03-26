@@ -2,7 +2,6 @@
 
 namespace Wunderlist\Service;
 
-use GuzzleHttp\Client;
 use Wunderlist\ApiClient;
 use Wunderlist\Entity\Membership;
 
