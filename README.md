@@ -8,9 +8,8 @@
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/1f67b9bd-f120-43d5-9f02-f73aa6132d86/small.png)](https://insight.sensiolabs.com/projects/1f67b9bd-f120-43d5-9f02-f73aa6132d86)
 
-Unofficial Wunderlist SDK
-
-This is the unofficial Wunderlist SDK for PHP!!
+Unofficial Wunderlist SDK for PHP
+This library works perfectly with Wunderlist v3.
 
 ## Install
 
