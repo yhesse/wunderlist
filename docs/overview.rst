@@ -1,20 +1,23 @@
 =================
-Welcome to Collections
+Welcome to Wunderlist PHP SDK
 =================
 
 What is it?
 ============
 
-The Collection library is one of the most useful things that many modern languages has, but for some reason
-PHP doesn't has a built in collection layer.
+This is the unofficial Wunderlist SDK for PHP!!
 
-For that reason we created Collections, an incredible library that gathers the best of .NET's and Java's
-collections patterns and unify it with PHP array power.
+The Wunderlist API provides REST-based storage and synchronization of a user’s lists across multiple
+platforms and devices. The primary things you’ll need to use it are an understanding of our data model,
+how we version individual entities in a user’s data, the formats we use for transmission, and a set
+of OAuth credentials.
+
+The PHP SDK helps you to interact with this API.
 
 Installation
 ============
 
-The recommended way to install Guzzle is with `Composer <http://getcomposer.org>`_. Composer is a dependency
+The recommended way to install Wunderlist PHP SDK is with `Composer <http://getcomposer.org>`_. Composer is a dependency
 management tool for PHP that allows you to declare the dependencies your project needs and installs them into your
 project.
 
@@ -23,20 +26,20 @@ project.
     # Install Composer
     curl -sS https://getcomposer.org/installer | php
 
-You can add Guzzle as a dependency using the composer.phar CLI:
+You can add Wunderlist PHP SDK as a dependency using the composer.phar CLI:
 
 .. code-block:: bash
 
-    php composer.phar require easyframework/collections:~4.0
+    php composer.phar require italolelis/wunderist
 
-Alternatively, you can specify Collections as a dependency in your project's
+Alternatively, you can specify Wunderlist PHP SDK as a dependency in your project's
 existing composer.json file:
 
 .. code-block:: js
 
     {
       "require": {
-         "easyframework/collections": "~4.0"
+         "italolelis/wunderist": "~1.0"
       }
    }
 
@@ -53,13 +56,13 @@ Bleeding edge
 -------------
 
 During your development, you can keep up with the latest changes on the master
-branch by setting the version requirement for Guzzle to ``~4.0@dev``.
+branch by setting the version requirement for Wunderlist PHP SDK to ``~1.0@dev``.
 
 .. code-block:: js
 
    {
       "require": {
-         "easyframework/collections": "~4.0@dev"
+         "italolelis/wunderist": "~4.0@dev"
       }
    }
 
@@ -96,10 +99,10 @@ Contributing
 Guidelines
 ----------
 
-1. Collections follows PSR-0, PSR-1, and PSR-2.
-2. Collections is meant to be lean and fast with very few dependencies.
-3. Collections has a minimum PHP version requirement of PHP 5.4. Pull requests must
-   not require a PHP version greater than PHP 5.4.
+1. Wunderlist PHP SDK follows PSR-0, PSR-1, and PSR-2.
+2. Wunderlist PHP SDK is meant to be lean and fast with very few dependencies.
+3. Wunderlist PHP SDK has a minimum PHP version requirement of PHP 5.5. Pull requests must
+   not require a PHP version greater than PHP 5.5.
 4. All pull requests must include unit tests to ensure the change works as
    expected and to prevent regressions.
 
@@ -111,10 +114,10 @@ install Collection's dependencies using Composer:
 
 .. code-block:: bash
 
-    git clone https://github.com/italolelis/collections.git
-    cd guzzle && curl -s http://getcomposer.org/installer | php && ./composer.phar install --dev
+    git clone https://github.com/italolelis/wunderlist.git
+    cd wunderlist && curl -s http://getcomposer.org/installer | php && ./composer.phar install --dev
 
-Guzzle is unit tested with PHPUnit. Run the tests using the vendored PHPUnit
+Wunderlist PHP SDK is unit tested with PHPUnit. Run the tests using the vendored PHPUnit
 binary:
 
 .. code-block:: bash
