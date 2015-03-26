@@ -44,15 +44,6 @@ class ListService extends AbstractService
         return $myLists;
     }
 
-    public function getTaskCounts($list)
-    {
-        return $this->client->get($this->getBaseUrl() . '/tasks_count', [
-            'query' => [
-                'list_id' => $list
-            ]
-        ])->json();
-    }
-
     public function makePublic(WList $data)
     {
         return $this->patch($this->getBaseUrl(), $data->getId(), [
