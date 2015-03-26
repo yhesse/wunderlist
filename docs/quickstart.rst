@@ -2,29 +2,46 @@
 Quickstart
 ==========
 
-This page provides a quick introduction to Collections and introductory examples.
-If you have not already installed, Collections, head over to the :ref:`installation`
+This page provides a quick introduction to Wunderlist PHP SDK and introductory examples.
+If you have not already installed, Wunderlist PHP SDK, head over to the :ref:`installation`
 page.
 
-ArrayList
+Usage
 ==============
 
-The ArrayList represents the List in .NET language or simply non-associative arrays in php:
+All services has these base methods wich can be vey useful:
 
 .. code-block:: php
 
-    use Collections\ArrayList;
+    //Gets a entity base on the ID
+    $service->getID(123456789);
 
-    $collection = new ArrayList();
-    $collection->add('John');
-    $collection->add('Maria');
-    $collection->add('Anderson');
+    //Gets the base url used to consume the API
+    $service->getBaseUrl();
 
-    $collection->map(function($item){
-        echo $item;
-    });
+    //Makes a GET request to the API
+    $service->get('lists');
 
-Lets continue with the exemple above and count how many elements we have!
+    //Creates an entity at the API
+    $service->create($entity);
+
+    //Updates an entity at the API
+    $service->update($entity);
+
+    //Deletes an entity from the API
+    $service->delete($entity);
+
+    //Performs a GET for a user ID on the resource.
+    $service->forUser($user);
+
+    //Performs a GET for a task ID on the resource.
+    $service->forTask($task);
+
+    //Performs a GET for a list ID on the resource.
+    $service->forList($list);
+
+    //Updates only certain fields at the API
+    $service->patch(123456789, ['completed' => true]);
 
 .. code-block:: php
 

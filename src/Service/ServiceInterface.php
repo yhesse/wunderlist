@@ -22,7 +22,7 @@ interface ServiceInterface
     public function getBaseUrl();
 
     /**
-     * Make a GET request to the API
+     * Makes a GET request to the API
      * @param string $resource The path to make the request
      * @param array $options Guzzle options for the request
      * @return mixed
@@ -62,6 +62,11 @@ interface ServiceInterface
      */
     public function delete(IdentifiableInterface $entity, $options = []);
 
+    /**
+     * Gets a entity base on the ID.
+     * @param $id The entity's ID
+     * @return object
+     */
     public function getID($id);
 
     /**
