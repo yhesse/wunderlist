@@ -3,6 +3,7 @@
 namespace Wunderlist\Service;
 
 use GuzzleHttp\Client;
+use Wunderlist\ApiClient;
 use Wunderlist\Entity\Membership;
 
 class MembershipService extends AbstractService
@@ -11,10 +12,10 @@ class MembershipService extends AbstractService
     protected $baseUrl = 'memberships';
     protected $type = Membership::class;
 
-    public function __construct(Client $client, $params)
+    public function __construct(ApiClient $client)
     {
-        parent::__construct($client, $params);
-        $this->userService = new UserService($client, $params);
+        parent::__construct($client);
+        $this->userService = new UserService($client);
     }
 
     public function all()

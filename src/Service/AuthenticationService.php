@@ -1,6 +1,6 @@
 <?php
 
-namespace Wunderlist;
+namespace Wunderlist\Service;
 
 use League\OAuth2\Client\Grant\RefreshToken;
 use League\OAuth2\Client\Provider\ProviderInterface;
@@ -8,7 +8,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-class ApiAuthenticator
+/**
+ * Responsible for authenticating on the API.
+ * @author Ítalo Lelis de Vietro <italolelis@gmail.com>
+ */
+class AuthenticationService
 {
     /**
      * @var Request

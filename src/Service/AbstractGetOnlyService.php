@@ -26,5 +26,4 @@ abstract class AbstractGetOnlyService extends AbstractService
     {
         throw new NotAllowedException(_('Method not allowed for this service.'));
     }
-
 }

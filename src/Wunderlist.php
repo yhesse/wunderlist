@@ -2,11 +2,8 @@
 
 namespace Wunderlist;
 
-use Carbon\Carbon;
-use Collections\ArrayList;
 use Collections\Dictionary;
-use GuzzleHttp\Client;
-use Wunderlist\Entity\Task;
+use Wunderlist\Service\AuthenticationService;
 use Wunderlist\Service\AvatarService;
 use Wunderlist\Service\ListPositionService;
 use Wunderlist\Service\ListService;
@@ -22,55 +19,39 @@ use Wunderlist\Service\TaskService;
 use Wunderlist\Service\UserService;
 use Wunderlist\Service\WebhookService;
 
+/**
+ * Represents the wunderlist API.
+ * @author Ítalo Lelis de Vietro <italolelis@gmail.com>
+ */
 class Wunderlist
 {
-    protected $apiUrl = 'https://a.wunderlist.com/api/{version}/';
-    protected $version = 'v1';
-
+    /**
+     * @var Dictionary
+     */
     protected $services;
+
+    /**
+     * @var AuthenticationService
+     */
+    protected $authenticationService;
+
+    /**
+     * @var ApiClient
+     */
+    protected $client;
+
+    /**
+     * @var string
+     */
+    protected $clientId;
 
     public function __construct($params)
     {
-        $authenticator = new ApiAuthenticator($this->createProvider($params));
-        $accessToken = $authenticator->authorize();
-        $client = $this->createGuzzle($params['clientId'], $accessToken);
+        $this->authenticationService = new AuthenticationService($this->createProvider($params));
+        $this->clientId = $params['clientId'];
         $this->services = new Dictionary();
-        $this->registerDefaultServices($client, $params);
-    }
-
-    protected function registerDefaultServices($client, $params)
-    {
-        $this->registerService('lists', new ListService($client, $params))
-            ->registerService('memberships', new MembershipService($client, $params))
-            ->registerService('tasks', new TaskService($client, $params))
-            ->registerService('subtasks', new SubtaskService($client, $params))
-            ->registerService('subtaskPositions', new SubtaskPositionService($client, $params))
-            ->registerService('taskPositions', new TaskPositionService($client, $params))
-            ->registerService('listPositions', new ListPositionService($client, $params))
-            ->registerService('notes', new NoteService($client, $params))
-            ->registerService('reminders', new ReminderService($client, $params))
-            ->registerService('taskComments', new TaskCommentsService($client, $params))
-            ->registerService('webhooks', new WebhookService($client, $params))
-            ->registerService('avatars', new AvatarService($client, $params))
-            ->registerService('users', new UserService($client, $params));
-    }
-
-    public function registerService($name, ServiceInterface $service)
-    {
-        $this->services->add($name, $service);
-        return $this;
-    }
-
-    protected function createGuzzle($clientID, $accessToken)
-    {
-        return new Client([
-            'base_url' => [$this->apiUrl, ['version' => $this->version]],
-            'defaults' => [
-                'headers' => [
-                    'X-Access-Token' => $accessToken,
-                    'X-Client-ID' => $clientID
-                ]
-            ]]);
+        $this->client = new ApiClient();
+        $this->registerDefaultServices($this->client);
     }
 
     protected function createProvider($params)
@@ -78,19 +59,91 @@ class Wunderlist
         return new \Wunderlist\Provider\Wunderlist($params);
     }
 
+    protected function registerDefaultServices(ApiClient $client)
+    {
+        $this->registerService('lists', new ListService($client))
+            ->registerService('memberships', new MembershipService($client))
+            ->registerService('tasks', new TaskService($client))
+            ->registerService('subtasks', new SubtaskService($client))
+            ->registerService('subtaskPositions', new SubtaskPositionService($client))
+            ->registerService('taskPositions', new TaskPositionService($client))
+            ->registerService('listPositions', new ListPositionService($client))
+            ->registerService('notes', new NoteService($client))
+            ->registerService('reminders', new ReminderService($client))
+            ->registerService('taskComments', new TaskCommentsService($client))
+            ->registerService('webhooks', new WebhookService($client))
+            ->registerService('avatars', new AvatarService($client))
+            ->registerService('users', new UserService($client));
+    }
+
+    /**
+     * Register a service
+     * @param string $name The service name
+     * @param ServiceInterface $service The service object
+     * @return $this
+     * @throws \Collections\Exception\KeyException
+     */
+    public function registerService($name, ServiceInterface $service)
+    {
+        $this->services->add($name, $service);
+        return $this;
+    }
+
+    /**
+     * Unregister a service
+     * @param string $name The service name
+     * @return $this
+     */
+    public function unregisterService($name)
+    {
+        $this->services->remove($name);
+        return $this;
+    }
+
+    /**
+     * Gets a service by it's name
+     * @param string $service The service name
+     * @return ServiceInterface
+     */
+    public function get($service)
+    {
+        //Lazy authentication
+        $accessToken = $this->authenticationService->authorize();
+        $this->client->createGuzzle($this->clientId, $accessToken);
+
+        return $this->services->get($service);
+    }
+
+    /**
+     * @return AuthenticationService
+     */
+    public function getAuthentication()
+    {
+        return $this->authenticationService;
+    }
+
+    /**
+     * @return ListService
+     */
     public function getLists()
     {
-        return $this->services->get('lists');
+        return $this->get('lists');
     }
 
+    /**
+     * @return TaskService
+     */
     public function getTasks()
     {
-        return $this->services->get('tasks');
+        return $this->get('tasks');
     }
 
+    /**
+     * @return MembershipService
+     */
     public function getMemberships()
     {
-        return $this->services->get('memberships');
+        return $this->get('memberships');
     }
 
     /**
@@ -98,7 +151,7 @@ class Wunderlist
      */
     public function getSubtasks()
     {
-        return $this->services->get('subtasks');
+        return $this->get('subtasks');
     }
 
     /**
@@ -106,7 +159,7 @@ class Wunderlist
      */
     public function getListPosition()
     {
-        return $this->services->get('listPositions');
+        return $this->get('listPositions');
     }
 
     /**
@@ -114,7 +167,7 @@ class Wunderlist
      */
     public function getSubtaskPosition()
     {
-        return $this->services->get('subtaskPositions');
+        return $this->get('subtaskPositions');
     }
 
     /**
@@ -122,7 +175,7 @@ class Wunderlist
      */
     public function getTaskPosition()
     {
-        return $this->services->get('taskPositions');
+        return $this->get('taskPositions');
     }
 
     /**
@@ -130,7 +183,7 @@ class Wunderlist
      */
     public function getAvatar()
     {
-        return $this->services->get('avatars');
+        return $this->get('avatars');
     }
 
     /**
@@ -138,7 +191,7 @@ class Wunderlist
      */
     public function getNotes()
     {
-        return $this->services->get('notes');
+        return $this->get('notes');
     }
 
     /**
@@ -146,7 +199,7 @@ class Wunderlist
      */
     public function getReminders()
     {
-        return $this->services->get('reminders');
+        return $this->get('reminders');
     }
 
     /**
@@ -154,7 +207,7 @@ class Wunderlist
      */
     public function getWebhooks()
     {
-        return $this->services->get('webhooks');
+        return $this->get('webhooks');
     }
 
     /**
@@ -162,50 +215,6 @@ class Wunderlist
      */
     public function getUser()
     {
-        return $this->services->get('users');
-    }
-
-    public function filterByDate(Carbon $date)
-    {
-        $lists = $this->getLists()->all();
-        $todayTasks = new ArrayList();
-
-        foreach ($lists as $list) {
-            $tasks = new ArrayList($this->getTasks()->forList($list));
-            $listTasks = $tasks->filter(function (Task $task) use ($date) {
-                if ($task->getDueDate()) {
-                    $taskDate = Carbon::instance($task->getDueDate());
-                    return $taskDate->toDateString() === $date->toDateString();
-                }
-            });
-            $todayTasks->concat($listTasks);
-        }
-
-        return $todayTasks;
-    }
-
-    public function getTodayTasks()
-    {
-        return $this->filterByDate(Carbon::today());
-    }
-
-    public function getOverdueTasks()
-    {
-        $lists = $this->getLists()->all();
-        $overdueTasks = new ArrayList();
-        $today = Carbon::today();
-
-        foreach ($lists as $list) {
-            $tasks = new ArrayList($this->getTasks()->forList($list));
-            $listTasks = $tasks->filter(function (Task $task) use ($today) {
-                if ($task->getDueDate()) {
-                    $date = Carbon::instance($task->getDueDate());
-                    return $date->gt($today);
-                }
-            });
-            $overdueTasks->concat($listTasks);
-        }
-
-        return $overdueTasks;
+        return $this->get('users');
     }
 }

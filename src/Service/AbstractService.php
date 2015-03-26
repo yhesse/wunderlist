@@ -3,17 +3,22 @@
 namespace Wunderlist\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use GuzzleHttp\Client;
 use JMS\Serializer\SerializerBuilder;
+use Wunderlist\ApiClient;
 use Wunderlist\Entity\IdentifiableInterface;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\User;
 use Wunderlist\Entity\WList;
 
+/**
+ * Contains the basic implementations for an API service.
+ * @author Ítalo Lelis de Vietro <italolelis@gmail.com>
+ */
 abstract class AbstractService implements ServiceInterface
 {
     /**
-     * The service's base path. For example 'tasks' will become 'https://a.wunderlist.com/api/v1/tasks' when an HTTP request is made.
+     * The service's base path. For example 'tasks' will become 'https://a.wunderlist.com/api/v1/tasks'
+     * when an HTTP request is made.
      * @var string
      */
     protected $baseUrl;
@@ -25,7 +30,7 @@ abstract class AbstractService implements ServiceInterface
     protected $type;
 
     /**
-     * @var Client
+     * @var ApiClient
      */
     protected $client;
 
@@ -34,7 +39,7 @@ abstract class AbstractService implements ServiceInterface
      */
     protected $serializer;
 
-    public function __construct(Client $client, $params)
+    public function __construct(ApiClient $client)
     {
         $this->client = $client;
         $this->serializer = SerializerBuilder::create()
@@ -43,12 +48,12 @@ abstract class AbstractService implements ServiceInterface
             ->build();
     }
 
-    protected function serialize($data)
+    public function serialize($data)
     {
         return $this->serializer->serialize($data, 'json');
     }
 
-    protected function deserialize($data, $type)
+    public function deserialize($data, $type)
     {
         return $this->serializer->deserialize($data, $type, 'json');
     }
@@ -61,47 +66,34 @@ abstract class AbstractService implements ServiceInterface
         return $this->baseUrl;
     }
 
-    protected function get($resource, $options = [])
+    public function get($resource, $options = [])
     {
-        return $this->client->get($resource, $options)->getBody()->getContents();
+        return $this->client->get($resource, $options);
     }
 
     public function create($entity, $options = [])
     {
-        $options['body'] = $this->serializer->serialize($entity, 'json');
-        $options['headers'] = [
-            'Content-Type' => 'application/json'
-        ];
-        $result = $this->client->post($this->getBaseUrl(), $options)->getBody()->getContents();
+        $jsonContent = $this->serializer->serialize($entity, 'json');
+        $result = $this->client->post($this->getBaseUrl(), $jsonContent, $options);
         return $this->deserialize($result, $this->type);
     }
 
     public function update(IdentifiableInterface $entity, $options = [])
     {
-        $options['body'] = $this->serializer->serialize($entity, 'json');
-        $options['headers'] = [
-            'Content-Type' => 'application/json'
-        ];
-        $result = $this->client->put($this->getBaseUrl() . '/' . $entity->getId(), $options)->getBody()->getContents();
+        $jsonContent = $this->serializer->serialize($entity, 'json');
+        $result = $this->client->put($this->getBaseUrl(), $entity->getId(), $jsonContent, $options);
         return $this->deserialize($result, $this->type);
     }
 
     public function patch($id, $data, $options = [])
     {
-        $options['json'] = $data;
-        $options['headers'] = [
-            'Content-Type' => 'application/json'
-        ];
-        $result = $this->client->patch($this->getBaseUrl() . '/' . $id, $options)->getBody()->getContents();
+        $result = $this->client->patch($this->getBaseUrl(), $id, $data, $options);
         return $this->deserialize($result, $this->type);
     }
 
     public function delete(IdentifiableInterface $entity, $options = [])
     {
-        $options['query'] = [
-            'revision' => $entity->getRevision()
-        ];
-        return $this->client->delete($this->getBaseUrl() . '/' . $entity->getId(), $options)->json();
+        return $this->client->delete($this->getBaseUrl(), $entity, $options);
     }
 
     public function getID($id)
