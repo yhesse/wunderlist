@@ -6,7 +6,7 @@
 [![Latest Stable Version](http://img.shields.io/packagist/v/italolelis/wunderlist.svg?style=flat-square)](https://packagist.org/packages/italolelis/wunderlist)
 [![Downloads](https://img.shields.io/packagist/dt/italolelis/wunderlist.svg?style=flat-square)](https://packagist.org/packages/italolelis/wunderlist)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/042ad7a7-df3d-4c3f-b93b-558b82d80cee/big.png)](https://insight.sensiolabs.com/projects/042ad7a7-df3d-4c3f-b93b-558b82d80cee)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/042ad7a7-df3d-4c3f-b93b-558b82d80cee/small.png)](https://insight.sensiolabs.com/projects/042ad7a7-df3d-4c3f-b93b-558b82d80cee)
 
 Unofficial Wunderlist SDK for PHP.
 This library works perfectly with Wunderlist v3.
