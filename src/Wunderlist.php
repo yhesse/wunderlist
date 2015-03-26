@@ -14,6 +14,7 @@ use Wunderlist\Service\ServiceInterface;
 use Wunderlist\Service\SubtaskPositionService;
 use Wunderlist\Service\SubtaskService;
 use Wunderlist\Service\TaskCommentsService;
+use Wunderlist\Service\TaskCountService;
 use Wunderlist\Service\TaskPositionService;
 use Wunderlist\Service\TaskService;
 use Wunderlist\Service\UserService;
@@ -73,7 +74,8 @@ class Wunderlist
             ->registerService('taskComments', new TaskCommentsService($client))
             ->registerService('webhooks', new WebhookService($client))
             ->registerService('avatars', new AvatarService($client))
-            ->registerService('users', new UserService($client));
+            ->registerService('users', new UserService($client))
+            ->registerService('tasksCounts', new TaskCountService($client));
     }
 
     /**
@@ -136,6 +138,14 @@ class Wunderlist
     public function getTasks()
     {
         return $this->get('tasks');
+    }
+
+    /**
+     * @return TaskCountService
+     */
+    public function getTaskCounts()
+    {
+        return $this->get('tasksCounts');
     }
 
     /**
