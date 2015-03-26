@@ -21,7 +21,7 @@
     "guzzlehttp/guzzle": "~5.2",
     "league/oauth2-client": "~0.10",
     "symfony/http-foundation": "~2.6",
-    "symfony/yml": "~2.6",
+    "symfony/yaml": "~2.6",
     "symfony/property-access": "~2.6",
     "jms/serializer": "~0.16",
     "doctrine/common": "~2.4",
