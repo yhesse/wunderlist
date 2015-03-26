@@ -1,4 +1,4 @@
-# Collections
+# Wunderlist PHP SDK
 
 [![Build Status](https://travis-ci.org/italolelis/wunderlist.svg?style=flat-square)](https://travis-ci.org/italolelis/wunderlist)
 [![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/italolelis/wunderlist.svg?style=flat-square)](https://scrutinizer-ci.com/g/italolelis/wunderlist/)
