@@ -12,10 +12,10 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 project = u'Collections'
-copyright = u'2013, Ítalo Lelis de Vietro'
+copyright = u'2015, Ítalo Lelis de Vietro'
 version = '4.0.0'
-html_title = "Collections Documentation"
-html_short_title = "Collections"
+html_title = "Wunderlist PHP SDK Documentation"
+html_short_title = "Wunderlist PHP SDK"
 
 exclude_patterns = ['_build']
 html_static_path = ['_static']
