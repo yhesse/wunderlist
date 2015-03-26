@@ -17,7 +17,7 @@
   ],
   "require": {
     "nesbot/carbon": "~1.17",
-    "easyframework/collections": "4.0.*@dev",
+    "easyframework/collections": "~3.2.",
     "guzzlehttp/guzzle": "~5.2",
     "league/oauth2-client": "~0.10",
     "symfony/http-foundation": "~2.6",

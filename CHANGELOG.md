@@ -3,9 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## Next - unreleased
 
-- Reactive Extensions initiative.
-- Adding new data structures LinkedList and LinkedDictionary.
+- Asynchronous requests through Guzzle.
+- Add upload funcionality for files, directly from PHP.
+- Add .
 
-## 1.0.0 - 2014-08-26
+## 1.0.0 - 2015-03-26
 ### Added
-- Changed all interfaces names to PSR (using the *Interface* suffix).
+- First commit
