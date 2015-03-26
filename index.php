@@ -37,7 +37,7 @@ $task = $tasks->getID(1063439979);
 
 dump(
 //    $wunderlist->getAvatar()->forUser($wunderlist->getUser()->current())
-    $lists->all()
+    $lists->accepted()
 //    $memberships->mine(),
 //    $lists->delete($lists->getID(154205231)),
 //    $tasks->forList($list, true),

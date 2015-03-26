@@ -2,7 +2,9 @@
 
 namespace Wunderlist\Service;
 
+use Collections\ArrayList;
 use Wunderlist\ApiClient;
+use Wunderlist\Entity\Membership;
 use Wunderlist\Entity\WList;
 
 class ListService extends AbstractService
@@ -20,22 +22,22 @@ class ListService extends AbstractService
     public function all()
     {
         $data = $this->get($this->getBaseUrl());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
     }
 
     public function accepted()
     {
         $myMemberships = $this->membershipService->mine();
-        $acceptedMemberships = $myMemberships->filter(function ($membership) {
+        $acceptedMemberships = $myMemberships->filter(function (Membership $membership) {
             return $membership->getState() === 'accepted';
         });
 
-        $acceptedIDs = $acceptedMemberships->map(function ($acceptedMembership) {
+        $acceptedIDs = $acceptedMemberships->map(function (Membership $acceptedMembership) {
             return $acceptedMembership->getListId();
         });
 
         $allLists = $this->all();
-        $myLists = $allLists->filter(function ($list) use ($acceptedIDs) {
+        $myLists = $allLists->filter(function (WList $list) use ($acceptedIDs) {
             return $acceptedIDs->indexOf($list->getId());
         });
 

@@ -2,6 +2,7 @@
 
 namespace Wunderlist\Service;
 
+use Collections\ArrayList;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializerBuilder;
 use Wunderlist\ApiClient;
@@ -125,7 +126,7 @@ abstract class AbstractService implements ServiceInterface
     public function forUser(User $user)
     {
         $data = $this->getItemsForAttribute($this->getBaseUrl(), 'user_id', $user->getId());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
     }
 
     /**
@@ -136,7 +137,7 @@ abstract class AbstractService implements ServiceInterface
     public function forTask(Task $task)
     {
         $data = $this->getItemsForAttribute($this->getBaseUrl(), 'task_id', $task->getId());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
     }
 
     /**
@@ -147,6 +148,6 @@ abstract class AbstractService implements ServiceInterface
     public function forList(WList $list)
     {
         $data = $this->getItemsForAttribute($this->getBaseUrl(), 'list_id', $list->getId());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
     }
 }
