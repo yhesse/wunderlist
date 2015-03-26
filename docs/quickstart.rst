@@ -6,10 +6,12 @@ This page provides a quick introduction to Wunderlist PHP SDK and introductory e
 If you have not already installed, Wunderlist PHP SDK, head over to the :ref:`installation`
 page.
 
-Usage
+Services
 ==============
 
-All services has these base methods wich can be vey useful:
+A service is something that can be consumable by our API client. For example, lists, tasks.
+Any service implements the ServiceInterface interface. All services has these base methods
+wich can be vey useful:
 
 .. code-block:: php
 
@@ -43,127 +45,70 @@ All services has these base methods wich can be vey useful:
     //Updates only certain fields at the API
     $service->patch(123456789, ['completed' => true]);
 
-.. code-block:: php
-
-    echo $colletion->count();
-
-Great, now we know how to run through a collection and how to count it, but these are pretty simple things to do,
-so lets sort them:
-
-.. code-block:: php
-
-    use Collections\ArrayList;
-    use Collections\Comparer\StringComparer;
-
-    $collection->sort(); //by default the sort is by the keys
-    $collection->sort(new StringComparer()); //this will sort by alfabetic order
-    $collection->sort(new YourCustomComparer()); //you can create your own custom comparer to sort your collection
-
-Yeah that is great, isn't it? But we can do much more things, now lets search for someone in the collection.
-
-.. code-block:: php
-
-    print_r($collection->contains("John")); //returns true
-
-Ok now we learned many things of collections, we can do even more, but I'll show you other type of collection
-called Dictionary.
-
-Dictionary
+Authentication
 ==============
 
-The Dictionary class is something like associative arrays in PHP, or Hash tables in other languages.
+The Wunderlist API uses OAuth2 to allow external applications to request authorization
+to a user’s Wunderlist account without directly handling their password.
+Developers must register their application before getting started. Registration assigns
+a unique client ID and client secret for your application’s use. After you have registered
+your application, you can let Wunderlist users authorize access to their account information
+from your application by getting an access token.
+After a user has authorized your application and you have an access token, you can use it
+in Wunderlist API requests by setting the X-Client-ID and X-Access-Token HTTP request headers.
+
+Our SDK handles this procedure very well. For this we have a some simple steps to make.
+Just remeber that this procedure is already done by our SDK, this is just an stand alone service
+if you want to use it.
 
 .. code-block:: php
+    //We create a provider which can handle the authentication procedure
+    $provider = new \Wunderlist\Provider\Wunderlist([
+        'clientId' => 'yourClientId',
+        'clientSecret' => 'yourClientSecret',
+        'redirectUri' => 'http://yourhost.com/wunderlist/callback'
+    ]);
 
-    use Collections\Dictionary;
+    //We create a service which can handle the provider procedure and store the result in session
+    $auth = new Wunderlist\Service\AuthenticationService($provider);
 
-    $dictionary = new Dictionary();
-    $dictionary->add('person1', array(
-      'name' => 'John',
-      'age' => 20
-    ));
-    $dictionary->add('person2', array(
-      'name' => 'Maria',
-      'age' => 19
-    ));
-    $dictionary->add('person3', array(
-      'name' => 'Anderson',
-      'age' => 25
-    ));
+    //We ask for the user's authorization, this will make a redirect to the authorization view and then
+    // redirects to your redicretUri. The redirectUri need to have this call again to handle the rest
+    // of the flow
+    $access_token = $auth->authorize();
 
-    $dictionary->map(function($item){
-        echo $key . ": " . $item['name'] . "-" . $item['age'];
-    });
 
-We can use object as keys too.
-
-.. code-block:: php
-
-    use Collections\Dictionary;
-
-    $dictionary = new Dictionary();
-
-    $object = new \stdClass();
-    $dictionary->add($object, 'value');
-    echo $dictionary->get($object); //prints 'value'
-
-When one key is inserted we can't insert the same key again, if we want to change its value we need to use
-the method set(). Here is an example of how we can get some item based on the key;
-
-.. code-block:: php
-
-  print_r ($dictionary->get('person1')); //returns array('name' => John, 'age' => 20)
-
-Working with objects
+Revisions and Sync
 ==============
 
-To our last exemple we'll use objects in our collection.
+Every entity in the Wunderlist API has a read-only revision property. This property is an integer which
+is updated in response to changes to that entity or any of its children. When the title of a task is
+changed, that task’s revision is updated—as well as the revisions of all of the parent items of that task,
+including list and root entities.
 
-.. code-block:: php
+Updating Entities
+--------------
 
-    use Collections\ArrayList;
+In order to guarantee that updates to Wunderlist entities are correctly executed and kept in sync across
+clients, any changes to an entity through the API must be accompanied by the revision property. The server
+uses this property to ensure that the client has the most up-to-date version of the entity. If a client
+makes a request with an out-of-date revision property, the request will fail, indicating that the client
+needs to fetch the entity’s current state and try again.
+If an update request fails, you must fetch the current version of the entity, look for attributes that
+conflict with your local state e.g. content on a note, and do some sort of local conflict resolution
+before replaying your changes to the API with the current revision.
 
-    $collection = new ArrayList();
-    $collection->add(new Person('John', 20));
-    $collection->add(new Person('Peter', 20));
-    $collection->add(new Person('Sophie', 21));
-    $collection->add(new Person('Angela', 29));
-    $collection->add(new Person('Maria', 19));
-    $collection->add(new Person('Anderson', 25));
+Sync
+--------------
 
-    $collection->map(function($item){
-        echo $item->getName();
-    });
-
-Pretty simple, but the reason I wanted to show you objects is because of Reactive Extension API.
-Lets seek everyone with age 20.
-
-.. code-block:: php
-
-  // this will return John and Peter
-  $people = $people->filter(function($person){
-      return $person->getAge() === 20 ? $person : null;
-  });
-
-The *map()* method will create a new collection based on the output of the callback being applied to each object
-in the original collection:
-
-.. code-block:: php
-
-  $new = $people->map(function ($person, $key) {
-      return $person->getAge() * 2;
-  });
-
-  // $result contains all persons with twice theirs ages;
-  $result = $new->toArray();
-
-One of the most common uses for a *map()* function is to extract a single column from a collection.
-If you are looking to build a list of elements containing the values for a particular property,
-you can use the *extract()* method:
-
-.. code-block:: php
-
-  $names = $people->extract('name');
-
-  // $result contains ['John', 'Peter', 'Sophie', 'Angela', 'Maria', 'Anderson'];
-  $result = $names->toArray();
+You can completely synchronize a local copy of the Wunderlist data model with the Wunderlist API by checking
+the root revision property, descending if necessary, and repeating the process for each leaf in the tree.
+When a russian doll sync occurs on a client, the following rules apply:
+Fetched revision values and data should not be committed to local models and persistence layers unless child
+resources are successfully fetched. This means you should not update the child-revision of the parent until
+all child data has been successfully fetched. E.g. you should not apply list data and revision changes unless
+all tasks were fetched successfully, etc.
+Deleted items can be found by comparing your local data to the data retrieved during a russian doll sync and
+comparing for missing ids. However, since tasks may be moved to another list, you should mark a task as
+missing and only delete it if it is not present in any lists when the russian doll sync has completed
+successfully. This pattern can be extended to any model type that is “moveable”.
