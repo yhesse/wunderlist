@@ -89,4 +89,4 @@ The MIT License (MIT). Please see [License File](https://github.com/italolelis/w
 ### Documentation
 
 More information can be found in the online documentation at
-http://collections.readthedocs.org/.
+http://wunderlist.readthedocs.org/.

@@ -1,17 +1,20 @@
-.. title:: Collections | Collections Abstraction library for PHP
+.. title:: Wunderlist PHP SDK | The unofficial Wunderlist SDK for PHP
 
 =================
-Welcome to Collections
+Welcome to Wunderlist PHP SDK
 =================
 
 What is it?
 ==============
 
-The Collection library is one of the most useful things that many modern languages has, but for some reason
-PHP doesn't has a built in collection layer.
+This is the unofficial Wunderlist SDK for PHP!!
 
-For that reason we created Collections, an incredible library that gathers the best of .NET's and Java's
-collections patterns and unify it with PHP array power.
+The Wunderlist API provides REST-based storage and synchronization of a user’s lists across multiple
+platforms and devices. The primary things you’ll need to use it are an understanding of our data model,
+how we version individual entities in a user’s data, the formats we use for transmission, and a set
+of OAuth credentials.
+
+The PHP SDK helps you to interact with this API.
 
 User guide
 ----------
@@ -21,10 +24,17 @@ User guide
 
   overview
   quickstart
-  reactive-extension
-  http-messages
-  events
-  streams
-  handlers
-  testing
-  faq
+  authorization
+  file
+  filePreview
+  list
+  membership
+  note
+  positions
+  reminder
+  subtask
+  task
+  taskComment
+  upload
+  user
+  webhooks
