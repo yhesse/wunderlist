@@ -9,6 +9,10 @@ Wunderlist\Entity\WList:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
       serialized_name: created_at
+    updatedAt:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: updated_at
     title:
       expose: true
       type: string

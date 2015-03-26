@@ -6,30 +6,12 @@ namespace Wunderlist\Entity;
 class WList implements IdentifiableInterface
 {
     use Revisionable,
-        Identifiable;
+        Identifiable,
+        Timestampable;
 
-    protected $createdAt;
     protected $title;
     protected $listType;
     protected $type;
-
-    /**
-     * @return mixed
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param mixed $createdAt
-     * @return $this
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
 
     /**
      * @return mixed

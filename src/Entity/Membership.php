@@ -6,7 +6,8 @@ namespace Wunderlist\Entity;
 class Membership implements IdentifiableInterface
 {
     use Revisionable,
-        Identifiable;
+        Identifiable,
+        Timestampable;
 
     protected $userID;
     protected $listID;

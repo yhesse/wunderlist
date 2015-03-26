@@ -1,4 +1,4 @@
-Wunderlist\Entity\User:
+Wunderlist\Entity\TaskComment:
   exclusion_policy: ALL
   properties:
     id:
@@ -13,15 +13,20 @@ Wunderlist\Entity\User:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
       serialized_name: updated_at
-    name:
+    taskID:
       expose: true
-      type: string
-      serialized_name: name
-    email:
-      expose: true
-      type: string
-      serialized_name: email
+      type: integer
+      serialized_name: task_id
     revision:
       expose: true
       type: integer
       serialized_name: revision
+    text:
+      expose: true
+      type: string
+      serialized_name: text
+    type:
+      expose: true
+      type: string
+      serialized_name: type
+

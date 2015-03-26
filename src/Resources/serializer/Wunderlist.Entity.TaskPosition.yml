@@ -1,0 +1,8 @@
+Wunderlist\Entity\TaskPosition:
+  exclusion_policy: ALL
+  properties:
+    taskID:
+      expose: true
+      type: integer
+      serialized_name: task_id
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wunderlist;
+namespace Wunderlist\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
@@ -10,7 +10,7 @@ use Wunderlist\Entity\Task;
 use Wunderlist\Entity\User;
 use Wunderlist\Entity\WList;
 
-abstract class AbstractService
+abstract class AbstractService implements ServiceInterface
 {
     /**
      * The service's base path. For example 'tasks' will become 'https://a.wunderlist.com/api/v1/tasks' when an HTTP request is made.
@@ -38,8 +38,8 @@ abstract class AbstractService
     {
         $this->client = $client;
         $this->serializer = SerializerBuilder::create()
-            ->setCacheDir(__DIR__ . '/../var/cache')
-            ->addMetadataDir(__DIR__ . '/Resources/serializer')
+            ->setCacheDir(__DIR__ . '/../../var/cache')
+            ->addMetadataDir(__DIR__ . '/../Resources/serializer')
             ->build();
     }
 

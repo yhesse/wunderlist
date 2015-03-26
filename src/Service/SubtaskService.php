@@ -1,6 +1,6 @@
 <?php
 
-namespace Wunderlist;
+namespace Wunderlist\Service;
 
 use Wunderlist\Entity\Subtask;
 use Wunderlist\Entity\Task;

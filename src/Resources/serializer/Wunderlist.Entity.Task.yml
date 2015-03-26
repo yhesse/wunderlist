@@ -7,8 +7,8 @@ Wunderlist\Entity\Task:
       serialized_name: assignee_id
     dueDate:
       expose: true
-      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
-      serialized_name: dueDate
+      type: 'DateTime<"Y-m-d">'
+      serialized_name: due_date
     listID:
       expose: true
       type: integer

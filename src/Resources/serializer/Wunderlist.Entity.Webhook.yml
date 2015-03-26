@@ -1,10 +1,14 @@
-Wunderlist\Entity\Membership:
+Wunderlist\Entity\Webhook:
   exclusion_policy: ALL
   properties:
     id:
       expose: true
       type: integer
       serialized_name: id
+    revision:
+      expose: true
+      type: integer
+      serialized_name: revision
     createdAt:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
@@ -13,31 +17,27 @@ Wunderlist\Entity\Membership:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
       serialized_name: updated_at
-    userID:
-      expose: true
-      type: string
-      serialized_name: user_id
     listID:
       expose: true
-      type: string
+      type: integer
       serialized_name: list_id
-    state:
-      expose: true
-      type: string
-      serialized_name: state
-    type:
-      expose: true
-      type: string
-      serialized_name: type
-    owner:
-      expose: true
-      type: string
-      serialized_name: owner
-    muted:
-      expose: true
-      type: string
-      serialized_name: muted
-    revision:
+    membershipID:
       expose: true
       type: integer
-      serialized_name: revision
+      serialized_name: membership_id
+    membershipType:
+      expose: true
+      type: string
+      serialized_name: membership_type
+    url:
+      expose: true
+      type: string
+      serialized_name: url
+    processorType:
+      expose: true
+      type: string
+      serialized_name: processor_type
+    configuration:
+      expose: true
+      type: string
+      serialized_name: configuration

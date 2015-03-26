@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(-1);
+date_default_timezone_set('America/Recife');
 
 $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
@@ -35,9 +36,10 @@ $task = $tasks->getID(1063439979);
 //    ->setTitle('Subtask Test');
 
 dump(
-//    $lists->all(),
+//    $wunderlist->getAvatar()->forUser($wunderlist->getUser()->current())
+    $lists->all()
 //    $memberships->mine(),
-    $lists->delete($lists->getID(154205231)),
-    $tasks->forList($list, true),
-    $tasks->allWithSubtasks($list)
+//    $lists->delete($lists->getID(154205231)),
+//    $tasks->forList($list, true),
+//    $tasks->allWithSubtasks($list)
 );

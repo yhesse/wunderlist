@@ -5,11 +5,12 @@ namespace Wunderlist\Entity;
 class User implements IdentifiableInterface
 {
     use Revisionable,
-        Identifiable;
+        Identifiable,
+        Timestampable;
 
     protected $name;
     protected $email;
-    protected $createdAt;
+
 
     /**
      * @return mixed
@@ -44,24 +45,6 @@ class User implements IdentifiableInterface
     public function setEmail($email)
     {
         $this->email = $email;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param mixed $createdAt
-     * @return $this
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
         return $this;
     }
 }

@@ -2,20 +2,16 @@
 
 namespace Wunderlist\Entity;
 
-class AbstractTask implements IdentifiableInterface
+abstract class AbstractTask implements IdentifiableInterface
 {
     use Revisionable,
-        Identifiable;
+        Identifiable,
+        Timestampable;
 
     /**
      * @var integer
      */
     protected $taskID;
-
-    /**
-     * @var \DateTime
-     */
-    protected $createdAt;
 
     /**
      * @var integer
@@ -57,24 +53,6 @@ class AbstractTask implements IdentifiableInterface
     public function setTaskID($taskID)
     {
         $this->taskID = $taskID;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     * @return $this
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
         return $this;
     }
 

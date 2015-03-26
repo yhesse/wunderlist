@@ -1,6 +1,6 @@
 <?php
 
-namespace Wunderlist;
+namespace Wunderlist\Service;
 
 use GuzzleHttp\Client;
 use Wunderlist\Entity\Membership;

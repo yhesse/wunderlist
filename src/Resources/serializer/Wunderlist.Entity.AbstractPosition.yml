@@ -1,10 +1,14 @@
-Wunderlist\Entity\User:
+Wunderlist\Entity\AbstractPosition:
   exclusion_policy: ALL
   properties:
     id:
       expose: true
       type: integer
       serialized_name: id
+    revision:
+      expose: true
+      type: integer
+      serialized_name: revision
     createdAt:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
@@ -13,15 +17,11 @@ Wunderlist\Entity\User:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
       serialized_name: updated_at
-    name:
+    values:
+      expose: true
+      type: array
+      serialized_name: values
+    type:
       expose: true
       type: string
-      serialized_name: name
-    email:
-      expose: true
-      type: string
-      serialized_name: email
-    revision:
-      expose: true
-      type: integer
-      serialized_name: revision
+      serialized_name: type

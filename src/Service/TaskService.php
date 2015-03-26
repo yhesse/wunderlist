@@ -1,6 +1,6 @@
 <?php
 
-namespace Wunderlist;
+namespace Wunderlist\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;

@@ -21,10 +21,14 @@ Wunderlist\Entity\AbstractTask:
       expose: true
       type: string
       serialized_name: title
-    completedAt:
+    createdAt:
       expose: true
       type: 'DateTime<"Y-m-d\TH:i:s.uO">'
-      serialized_name: completed_at
+      serialized_name: created_at
+    updatedAt:
+      expose: true
+      type: 'DateTime<"Y-m-d\TH:i:s.uO">'
+      serialized_name: updated_at
     completedByID:
       expose: true
       type: string
