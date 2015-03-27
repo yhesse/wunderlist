@@ -45,10 +45,11 @@ class Wunderlist
      * @var string
      */
     protected $clientId;
+    protected $params;
 
     public function __construct($params)
     {
-        $this->authenticationService = new AuthenticationService($this->createProvider($params));
+        $this->params = $params;
         $this->clientId = $params['clientId'];
         $this->services = new Dictionary();
         $this->client = new ApiClient();
@@ -121,7 +122,27 @@ class Wunderlist
      */
     public function getAuthentication()
     {
+        if (!$this->authenticationService) {
+            $request = Request::createFromGlobals();
+            $session = new Session();
+            if (!$session->isStarted()) {
+                $session->start();
+            }
+            $request->setSession($session);
+            $provider = $this->createProvider($this->params);
+            $this->authenticationService = new AuthenticationService($provider, $request);
+        }
         return $this->authenticationService;
+    }
+
+    /**
+     * @param AuthenticationService $authenticationService
+     * @return $this
+     */
+    public function setAuthenticationService($authenticationService)
+    {
+        $this->authenticationService = $authenticationService;
+        return $this;
     }
 
     /**
