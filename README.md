@@ -24,17 +24,32 @@ composer require italolelis/wunderlist
 The SDK is pretty simple to use, here is an example of how we can access all lists:
 
 ```php
-$wunderlist = new \Wunderlist\Wunderlist([
-    'clientId' => 'yourClientId',
-    'clientSecret' => 'yourClientSecret',
-    'redirectUri' => 'http://yourhost.com/wunderlist/callback'
-]);
+
+// This is necessary for PHPoAuthLib authentication
+$credentials = new Credentials(
+    'yourClientId',
+    'yourClientSecret',
+    'http://domain.com/oauth/callback'
+);
+$wunderlistAuthService = new OAuth\Service\Wunderlist($credentials);
+
+// We need to instaciate the PHPoAuthLib strategy
+$wunderlistAuthenticator = new Wunderlist\OAuth\OAuthLibAuthentication($credentials);
+
+// Instanciate wunderlist API manager
+$wunderlist = new \Wunderlist\Wunderlist($wunderlistAuthenticator);
 
 //Here we get the lists service, we did not get the lists yet
 $listsService = $wunderlist->getLists();
 
 //Here we get all lists for the authenticated user
-$listsService->all();
+$lists = $listsService->all();
+
+//For each list on the lists
+$lists->map(function($list) {
+    echo $list->getTitle();
+});
+    
 ```
 
 What about all taks for a list?
@@ -46,9 +61,12 @@ $tasksService = $wunderlist->getTasks();
 $lists = $listsService->all();
 
 //For each list on the lists
-foreach($lists as $list) {
+$lists->map(function($list) {
     $tasks = $tasksService->forList($list);
-}
+    $tasks->map(function($task){
+        echo $task->getTitle();
+    });
+});
 
 ```
 
@@ -64,8 +82,7 @@ $lists = $listsService->all();
 $list = $lists->first();
 
 $task = new \Wunderlist\Entity\Task();
-$task
-    ->setListID($list->getId())
+$task->setListID($list->getId())
     ->setTitle('Test Hello');
 
 $tasksService->create($task);

@@ -1,9 +1,9 @@
-=================
+=============================
 Welcome to Wunderlist PHP SDK
-=================
+=============================
 
 What is it?
-============
+===========
 
 This is the unofficial Wunderlist SDK for PHP!!
 

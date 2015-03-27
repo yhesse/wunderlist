@@ -1,11 +1,11 @@
 .. title:: Wunderlist PHP SDK | The unofficial Wunderlist SDK for PHP
 
-=================
+=============================
 Welcome to Wunderlist PHP SDK
-=================
+=============================
 
 What is it?
-==============
+===========
 
 This is the unofficial Wunderlist SDK for PHP!!
 
@@ -24,10 +24,8 @@ User guide
 
   overview
   quickstart
-  authorization
-  file
-  filePreview
   list
+  task
   membership
   note
   positions
