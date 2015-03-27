@@ -31,7 +31,6 @@ User guide
   positions
   reminder
   subtask
-  task
   taskComment
   upload
   user

@@ -1,5 +1,5 @@
 =====
-Lists
+Tasks
 =====
 
 Provides methods for easy access to tasks data.

@@ -63,7 +63,7 @@ class LeagueAuthentication implements AuthenticationInterface
      */
     public function getConsumerId()
     {
-        // TODO: Implement getConsumerId() method.
+
     }
 
     /**
@@ -71,7 +71,7 @@ class LeagueAuthentication implements AuthenticationInterface
      */
     public function hasAccessToken()
     {
-        // TODO: Implement hasAccessToken() method.
+
     }
 
     public function authorize()
