@@ -4,7 +4,7 @@ namespace Wunderlist\Service;
 
 use Carbon\Carbon;
 use Collections\ArrayList;
-use Doctrine\Common\Collections\ArrayCollection;
+use React\Promise\Promise;
 use Wunderlist\ApiClient;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\WList;
@@ -31,8 +31,9 @@ class TaskService extends AbstractService
             'completed' => $completed
         ];
 
-        $data = $this->getItemsForAttributes($this->getBaseUrl(), $data);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->getItemsForAttributes($this->getBaseUrl(), $data)->then(function ($content) {
+            return new ArrayList($this->deserialize($content, "ArrayCollection<{$this->type}>"));
+        });
     }
 
     public function all(WList $list)
@@ -42,55 +43,72 @@ class TaskService extends AbstractService
 
     public function allWithSubtasks(WList $list)
     {
-        $tasks = new ArrayCollection($this->all($list));
-        $tasksWithSubtaks = $tasks->map(function (Task $task) {
-            return $task->setSubtasks($this->subtaskService->forTask($task));
+        return $this->all($list)->then(function ($tasks) {
+            return $tasks->map(function (Task $task) {
+                return $this->subtaskService->forTask($task)->then(function ($subtasks) use ($task) {
+                    return $task->setSubtasks($subtasks);
+                });
+            });
         });
-
-        return $tasksWithSubtaks;
     }
 
+    /**
+     * @param Carbon $date
+     * @return Promise
+     */
     public function filterByDate(Carbon $date)
     {
-        $lists = $this->listService->all();
-        $todayTasks = new ArrayList();
-
-        foreach ($lists as $list) {
-            $tasks = new ArrayList($this->forList($list));
-            $listTasks = $tasks->filter(function (Task $task) use ($date) {
-                if ($task->getDueDate()) {
-                    $taskDate = Carbon::instance($task->getDueDate());
-                    return $taskDate->toDateString() === $date->toDateString();
+        return $this->listService->all()
+            ->then(function ($lists) {
+                $allTasks = new ArrayList();
+                foreach ($lists as $list) {
+                    $this->forList($list)->done(function ($tasks) use ($allTasks) {
+                        $allTasks->addAll($tasks);
+                    });
                 }
+                return $allTasks;
+            })
+            ->then(function ($allTasks) use ($date) {
+                return $allTasks->filter(function (Task $task) use ($date) {
+                    if ($task->getDueDate()) {
+                        $taskDate = Carbon::instance($task->getDueDate());
+                        return $taskDate->toDateString() === $date->toDateString();
+                    }
+                });
             });
-            $todayTasks->concat($listTasks);
-        }
-
-        return $todayTasks;
     }
 
+    /**
+     * @return Promise
+     */
     public function today()
     {
         return $this->filterByDate(Carbon::today());
     }
 
+    /**
+     * @return Promise
+     */
     public function overdue()
     {
-        $lists = $this->listService->all();
-        $overdueTasks = new ArrayList();
         $today = Carbon::today();
-
-        foreach ($lists as $list) {
-            $tasks = new ArrayList($this->forList($list));
-            $listTasks = $tasks->filter(function (Task $task) use ($today) {
-                if ($task->getDueDate()) {
-                    $date = Carbon::instance($task->getDueDate());
-                    return $date->gt($today);
+        return $this->listService->all()
+            ->then(function ($lists) {
+                $overdueTasks = new ArrayList();
+                foreach ($lists as $list) {
+                    $this->forList($list)->done(function ($tasks) use ($overdueTasks) {
+                        $overdueTasks->addAll($tasks);
+                    });
                 }
+                return $overdueTasks;
+            })
+            ->then(function ($overdueTasks) use ($today) {
+                return $overdueTasks->filter(function (Task $task) use ($today) {
+                    if ($task->getDueDate()) {
+                        $date = Carbon::instance($task->getDueDate());
+                        return $date->gt($today);
+                    }
+                });
             });
-            $overdueTasks->concat($listTasks);
-        }
-
-        return $overdueTasks;
     }
 }

@@ -3,6 +3,7 @@
 namespace Wunderlist\Service;
 
 use Collections\ArrayList;
+use React\Promise\Promise;
 use Wunderlist\ApiClient;
 use Wunderlist\Entity\Membership;
 use Wunderlist\Entity\WList;
@@ -19,41 +20,55 @@ class ListService extends AbstractService
         $this->membershipService = new MembershipService($client);
     }
 
+    /**
+     * @return Promise
+     */
     public function all()
     {
-        $data = $this->get($this->getBaseUrl());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->get($this->getBaseUrl())->then(function ($data) {
+            return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        });
     }
 
+    /**
+     * @return Promise
+     */
     public function accepted()
     {
-        $myMemberships = $this->membershipService->mine();
-        $acceptedMemberships = $myMemberships->filter(function (Membership $membership) {
-            return $membership->getState() === 'accepted';
-        });
-
-        $acceptedIDs = $acceptedMemberships->map(function (Membership $acceptedMembership) {
-            return $acceptedMembership->getListId();
-        });
-
-        $allLists = $this->all();
-        $myLists = $allLists->filter(function (WList $list) use ($acceptedIDs) {
-            return $acceptedIDs->indexOf($list->getId());
-        });
-
-        return $myLists;
+        return $this->membershipService->mine()
+            ->then(function ($myMemberships) {
+                return $myMemberships->filter(function (Membership $membership) {
+                    return $membership->getState() === 'accepted';
+                });
+            })->then(function ($acceptedMemberships) {
+                return $acceptedMemberships->map(function (Membership $acceptedMembership) {
+                    return $acceptedMembership->getListId();
+                });
+            })->then(function ($acceptedIDs) {
+                return $this->all()->then(function ($allLists) use ($acceptedIDs) {
+                    return $allLists->filter(function (WList $list) use ($acceptedIDs) {
+                        return $acceptedIDs->indexOf($list->getId());
+                    });
+                });
+            });
     }
 
+    /**
+     * @return Promise
+     */
     public function makePublic(WList $data)
     {
-        return $this->patch($this->getBaseUrl(), $data->getId(), [
+        return $this->patch($data->getId(), [
             'public' => true
         ]);
     }
 
+    /**
+     * @return Promise
+     */
     public function makePrivate(WList $data)
     {
-        return $this->patch($this->getBaseUrl(), $data->getId(), [
+        return $this->patch($data->getId(), [
             'public' => false
         ]);
     }

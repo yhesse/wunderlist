@@ -2,6 +2,8 @@
 
 namespace Wunderlist\Service;
 
+use Collections\ArrayList;
+use React\Promise\Promise;
 use Wunderlist\Entity\Subtask;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\WList;
@@ -12,6 +14,11 @@ class SubtaskService extends AbstractService
     protected $baseUrl = 'subtasks';
     protected $type = Subtask::class;
 
+    /**
+     * @param WList $list
+     * @param bool $completed
+     * @return Promise
+     */
     public function forList(WList $list, $completed = false)
     {
         $params = [
@@ -19,10 +26,16 @@ class SubtaskService extends AbstractService
             'completed' => $completed
         ];
 
-        $data = $this->getItemsForAttributes($this->getBaseUrl(), $params);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->getItemsForAttributes($this->getBaseUrl(), $params)->then(function ($content) {
+            return new ArrayList($this->deserialize($content, "ArrayCollection<{$this->type}>"));
+        });
     }
 
+    /**
+     * @param Task $task
+     * @param bool $completed
+     * @return Promise
+     */
     public function forTask(Task $task, $completed = false)
     {
         $params = [
@@ -30,7 +43,9 @@ class SubtaskService extends AbstractService
             'completed' => $completed
         ];
 
-        $data = $this->getItemsForAttributes($this->getBaseUrl(), $params);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->getItemsForAttributes($this->getBaseUrl(), $params)->then(function ($content) {
+            return new ArrayList($this->deserialize($content, "ArrayCollection<{$this->type}>"));
+        });
+
     }
 }

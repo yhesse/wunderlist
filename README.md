@@ -21,57 +21,81 @@ composer require italolelis/wunderlist
 
 ### Basic example
 
-The SDK is pretty simple to use, here is an example of how we can access all lists:
+The SDK is pretty simple to use, looks like an javascript client, doesn't it?
+That is because all calls to the API are asynchronous, cool hun? 
+This creates a *GuzzleHttp\Message\FutureResponse* object that has not yet completed. 
+Once you have a future response, you can use a promise object obtained 
+by calling the then method of the response to take an action when the response has completed or 
+encounters an error.
+
+First we need to configure the credentials:
 
 ```php
-$wunderlist = new \Wunderlist\Wunderlist([
-    'clientId' => 'yourClientId',
-    'clientSecret' => 'yourClientSecret',
-    'redirectUri' => 'http://yourhost.com/wunderlist/callback'
-]);
+    $wunderlist = new \Wunderlist\Wunderlist([
+        'clientId' => 'yourClientId',
+        'clientSecret' => 'yourClientSecret',
+        'redirectUri' => 'http://yourhost.com/wunderlist/callback'
+    ]);
+```
 
-//Here we get the lists service, we did not get the lists yet
-$listsService = $wunderlist->getLists();
+Here is an example of how we can access all lists:
 
-//Here we get all lists for the authenticated user
-$listsService->all();
+```php
+    //Here we get the lists service, we did not get the lists yet
+    $listsService = $wunderlist->getLists();
+    
+    //Here we get all lists for the authenticated user
+    $listsService->all()->done(function($lists){
+        $lists->each(function($list) {
+            echo $list->getTitle();
+        });
+    });
 ```
 
 What about all taks for a list?
 
 ```php
-$tasksService = $wunderlist->getTasks();
-
-//Here we get all lists for the authenticated user
-$lists = $listsService->all();
-
-//For each list on the lists
-foreach($lists as $list) {
-    $tasks = $tasksService->forList($list);
-}
-
+    $listsService = $wunderlist->getLists();
+    $tasksService = $wunderlist->getTasks();
+    
+    $listsService->all()->done(function ($lists) use ($tasksService) {
+        $lists->each(function ($list) use ($tasksService) {
+            $tasksService->forList($list)->done('getTasks');
+        });
+    });
+    
+    function getTasks($tasks)
+    {
+        $tasks->each(function ($task) {
+            echo $task->getTitle() . '<br>';
+        });
+    }
 ```
 
 Ok, now lets create a task for a list
 
 ```php
+$listsService = $wunderlist->getLists();
 $tasksService = $wunderlist->getTasks();
 
 //Here we get all lists for the authenticated user
-$lists = $listsService->all();
+$lists = $listsService->all()->done(function ($lists) use ($tasksService) {
+    //We get the first list
+    $list = $lists->first();
 
-//We get the first list
-$list = $lists->first();
+    $task = new \Wunderlist\Entity\Task();
+    $task
+        ->setListID($list->getId())
+        ->setTitle('Hello I am a Task for the first list');
 
-$task = new \Wunderlist\Entity\Task();
-$task
-    ->setListID($list->getId())
-    ->setTitle('Test Hello');
-
-$tasksService->create($task);
+    $tasksService->create($task)->done(function ($task) {
+        echo 'Created Task ID: ' . $task->getId() . '<br>';
+    });
+});
 ```
 
 This is just some simple things you can do with the SDK. Whant more? please just read our [documentation](http://wunderlist.readthedocs.org/)
+
 ## Contributing
 
 Please see [CONTRIBUTING](https://github.com/LellysInformatica/collections/blob/master/CONTRIBUTING.md) for details.

@@ -2,6 +2,7 @@
 
 namespace Wunderlist\Service;
 
+use React\Promise\Promise;
 use Wunderlist\Entity\User;
 
 class UserService extends AbstractService
@@ -11,13 +12,18 @@ class UserService extends AbstractService
 
     public function all()
     {
-        $data = $this->get($this->getBaseUrl());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->get($this->getBaseUrl())->then(function ($content) {
+            return $this->deserialize($content, "ArrayCollection<{$this->type}>");
+        });
     }
 
+    /**
+     * @return Promise
+     */
     public function current()
     {
-        $data = $this->get('user');
-        return $this->deserialize($data, $this->type);
+        return $this->get($this->getBaseUrl())->then(function ($content) {
+            return $this->deserialize($content, $this->type);
+        });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Wunderlist\Service;
 
+use React\Promise\Promise;
 use Wunderlist\ApiClient;
 use Wunderlist\Entity\Membership;
 
@@ -19,14 +20,19 @@ class MembershipService extends AbstractService
 
     public function all()
     {
-        $data = $this->get($this->getBaseUrl());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->get($this->getBaseUrl())->then(function ($content) {
+            return $this->deserialize($content, "ArrayCollection<{$this->type}>");
+        });
     }
 
+    /**
+     * @return Promise
+     */
     public function mine()
     {
-        $user = $this->userService->current();
-        return $this->forUser($user);
+        return $this->userService->current()->then(function ($user) {
+            return $this->forUser($user);
+        });
     }
 
     public function addMemberToList($list, $user, $muted = false)

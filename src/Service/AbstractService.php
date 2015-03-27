@@ -5,6 +5,7 @@ namespace Wunderlist\Service;
 use Collections\ArrayList;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializerBuilder;
+use React\Promise\Promise;
 use Wunderlist\ApiClient;
 use Wunderlist\Entity\IdentifiableInterface;
 use Wunderlist\Entity\Task;
@@ -75,21 +76,24 @@ abstract class AbstractService implements ServiceInterface
     public function create($entity, $options = [])
     {
         $jsonContent = $this->serializer->serialize($entity, 'json');
-        $result = $this->client->post($this->getBaseUrl(), $jsonContent, $options);
-        return $this->deserialize($result, $this->type);
+        return $this->client->post($this->getBaseUrl(), $jsonContent, $options)->then(function ($content) {
+            return $this->deserialize($content, $this->type);
+        });
     }
 
     public function update(IdentifiableInterface $entity, $options = [])
     {
         $jsonContent = $this->serializer->serialize($entity, 'json');
-        $result = $this->client->put($this->getBaseUrl(), $entity->getId(), $jsonContent, $options);
-        return $this->deserialize($result, $this->type);
+        return $this->client->put($this->getBaseUrl(), $entity->getId(), $jsonContent, $options)->then(function ($content) {
+            return $this->deserialize($content, $this->type);
+        });
     }
 
     public function patch($id, $data, $options = [])
     {
-        $result = $this->client->patch($this->getBaseUrl(), $id, $data, $options);
-        return $this->deserialize($result, $this->type);
+        return $this->client->patch($this->getBaseUrl(), $id, $data, $options)->then(function ($content) {
+            return $this->deserialize($content, $this->type);
+        });
     }
 
     public function delete(IdentifiableInterface $entity, $options = [])
@@ -97,10 +101,15 @@ abstract class AbstractService implements ServiceInterface
         return $this->client->delete($this->getBaseUrl(), $entity, $options);
     }
 
+    /**
+     * @param $id
+     * @return Promise
+     */
     public function getID($id)
     {
-        $data = $this->get($this->getBaseUrl() . '/' . $id);
-        return $this->deserialize($data, $this->type);
+        return $this->get($this->getBaseUrl() . '/' . $id)->then(function ($contents) {
+            return $this->deserialize($contents, $this->type);
+        });
     }
 
     protected function getItemsForAttribute($url, $attribute, $value)
@@ -121,33 +130,36 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Performs a GET for a user ID on the resource.
      * @param User $user - The user id.
-     * @return ArrayCollection
+     * @return Promise
      */
     public function forUser(User $user)
     {
-        $data = $this->getItemsForAttribute($this->getBaseUrl(), 'user_id', $user->getId());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->getItemsForAttribute($this->getBaseUrl(), 'user_id', $user->getId())->then(function ($data) {
+            return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        });
     }
 
     /**
      * Performs a GET for a task ID on the resource.
      * @param Task $task - The task id.
-     * @return ArrayCollection
+     * @return Promise
      */
     public function forTask(Task $task)
     {
-        $data = $this->getItemsForAttribute($this->getBaseUrl(), 'task_id', $task->getId());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->getItemsForAttribute($this->getBaseUrl(), 'task_id', $task->getId())->then(function ($data) {
+            return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        });
     }
 
     /**
      * Performs a GET for a list ID on the resource.
      * @param WList $list - The list id.
-     * @return ArrayCollection
+     * @return Promise
      */
     public function forList(WList $list)
     {
-        $data = $this->getItemsForAttribute($this->getBaseUrl(), 'list_id', $list->getId());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->getItemsForAttribute($this->getBaseUrl(), 'list_id', $list->getId())->then(function ($data) {
+            return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        });
     }
 }

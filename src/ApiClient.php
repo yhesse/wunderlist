@@ -3,6 +3,7 @@
 namespace Wunderlist;
 
 use GuzzleHttp\Client;
+use React\Promise\Promise;
 use Wunderlist\Entity\IdentifiableInterface;
 
 /**
@@ -67,43 +68,63 @@ class ApiClient
             ]]);
     }
 
+    /**
+     * @param $resource
+     * @param array $options
+     * @return Promise
+     */
     public function get($resource, $options = [])
     {
-        return $this->client->get($resource, $options)->getBody()->getContents();
+        $options['future'] = true;
+        return $this->client->get($resource, $options)->then(function ($response) {
+            return $response->getBody()->getContents();
+        });
     }
 
     public function post($resource, $body, $options = [])
     {
+        $options['future'] = true;
         $options['body'] = $body;
         $options['headers'] = [
             'Content-Type' => 'application/json'
         ];
-        return $this->client->post($resource, $options)->getBody()->getContents();
+        return $this->client->post($resource, $options)->then(function ($response) {
+            return $response->getBody()->getContents();
+        });
     }
 
     public function put($resource, $id, $body, $options = [])
     {
+        $options['future'] = true;
         $options['body'] = $body;
         $options['headers'] = [
             'Content-Type' => 'application/json'
         ];
-        return $this->client->put($resource . '/' . $id, $options)->getBody()->getContents();
+        return $this->client->put($resource . '/' . $id, $options)->then(function ($response) {
+            return $response->getBody()->getContents();
+        });
     }
 
     public function patch($resource, $id, $data, $options = [])
     {
+        $options['future'] = true;
         $options['json'] = $data;
         $options['headers'] = [
             'Content-Type' => 'application/json'
         ];
-        return $this->client->patch($resource . '/' . $id, $options)->getBody()->getContents();
+        return $this->client->patch($resource . '/' . $id, $options)->then(function ($response) {
+            return $response->getBody()->getContents();
+        });
     }
 
     public function delete($resource, IdentifiableInterface $entity, $options = [])
     {
+        $options['future'] = true;
         $options['query'] = [
             'revision' => $entity->getRevision()
         ];
-        return $this->client->delete($resource . '/' . $entity->getId(), $options)->json();
+        return $this->client->delete($resource . '/' . $entity->getId(), $options)->then(function ($response) {
+            return $response->json();
+        });
     }
 }
