@@ -3,7 +3,7 @@
 namespace Wunderlist;
 
 use Collections\Dictionary;
-use Wunderlist\Service\AuthenticationService;
+use Wunderlist\OAuth\AuthenticationInterface;
 use Wunderlist\Service\AvatarService;
 use Wunderlist\Service\ListPositionService;
 use Wunderlist\Service\ListService;
@@ -41,24 +41,12 @@ class Wunderlist
      */
     protected $client;
 
-    /**
-     * @var string
-     */
-    protected $clientId;
-    protected $params;
-
-    public function __construct($params)
+    public function __construct(AuthenticationInterface $authenticationService)
     {
-        $this->params = $params;
-        $this->clientId = $params['clientId'];
+        $this->authenticationService = $authenticationService;
         $this->services = new Dictionary();
         $this->client = new ApiClient();
         $this->registerDefaultServices($this->client);
-    }
-
-    protected function createProvider($params)
-    {
-        return new \Wunderlist\Provider\Wunderlist($params);
     }
 
     protected function registerDefaultServices(ApiClient $client)
@@ -111,9 +99,12 @@ class Wunderlist
     public function get($service)
     {
         //Lazy authentication
-        $accessToken = $this->authenticationService->authorize();
-        $this->client->createGuzzle($this->clientId, $accessToken);
+        $token = $this->authenticationService->getAccessToken();
+        if (!$token->getAccessToken()) {
+            $this->authenticationService->authorize();
+        }
 
+        $this->client->createGuzzle($this->authenticationService->getConsumerId(), $token->getAccessToken());
         return $this->services->get($service);
     }
 
@@ -122,16 +113,6 @@ class Wunderlist
      */
     public function getAuthentication()
     {
-        if (!$this->authenticationService) {
-            $request = Request::createFromGlobals();
-            $session = new Session();
-            if (!$session->isStarted()) {
-                $session->start();
-            }
-            $request->setSession($session);
-            $provider = $this->createProvider($this->params);
-            $this->authenticationService = new AuthenticationService($provider, $request);
-        }
         return $this->authenticationService;
     }
 

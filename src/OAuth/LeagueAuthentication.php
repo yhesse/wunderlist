@@ -1,34 +1,32 @@
 <?php
 
-namespace Wunderlist\Service;
+namespace Wunderlist\OAuth;
 
-use League\OAuth2\Client\Grant\RefreshToken;
 use League\OAuth2\Client\Provider\ProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Wunderlist\OAuth\Provider\Wunderlist;
 
 /**
  * Responsible for authenticating on the API.
  * @author Ítalo Lelis de Vietro <italolelis@gmail.com>
  */
-class AuthenticationService
+class LeagueAuthentication implements AuthenticationInterface
 {
     /**
      * @var Request
      */
     protected $request;
-
     /**
      * @var ProviderInterface
      */
     protected $provider;
-
     /**
      * @var string
      */
     protected $token;
 
-    public function __construct(ProviderInterface $provider, Request $request)
+    public function __construct(Wunderlist $provider, Request $request)
     {
         $this->provider = $provider;
         $this->request = $request;
@@ -63,24 +61,23 @@ class AuthenticationService
     /**
      * @return string
      */
-    public function getRefreshToken()
+    public function getConsumerId()
     {
-        return $this->token->refreshToken;
+        // TODO: Implement getConsumerId() method.
     }
 
     /**
      * @return string
      */
-    public function getExpires()
+    public function hasAccessToken()
     {
-        return $this->token->expires;
+        // TODO: Implement hasAccessToken() method.
     }
 
     public function authorize()
     {
         $request = $this->getRequest();
         $session = $request->getSession();
-
         if (!$request->query->has('code')) {
             // If we don't have an authorization code then get one
             $authUrl = $this->provider->getAuthorizationUrl();
@@ -96,15 +93,6 @@ class AuthenticationService
                 'code' => $this->request->query->get('code')
             ]);
         }
-
         return $this->token->accessToken;
-    }
-
-    public function refresh($refreshToken)
-    {
-        $grant = new RefreshToken();
-        $this->token = $this->provider->getAccessToken($grant, [
-            'refresh_token' => $refreshToken
-        ]);
     }
 }

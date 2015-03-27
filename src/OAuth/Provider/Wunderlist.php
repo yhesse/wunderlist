@@ -1,6 +1,6 @@
 <?php
 
-namespace Wunderlist\Provider;
+namespace Wunderlist\OAuth\Provider;
 
 use League\OAuth2\Client\Entity\User;
 use League\OAuth2\Client\Provider\AbstractProvider;
