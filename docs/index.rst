@@ -35,3 +35,4 @@ User guide
   upload
   user
   webhooks
+  integrations

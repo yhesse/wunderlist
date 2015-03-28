@@ -62,7 +62,7 @@ branch by setting the version requirement for Wunderlist PHP SDK to ``~1.0@dev``
 
    {
       "require": {
-         "italolelis/wunderist": "~4.0@dev"
+         "italolelis/wunderist": "~1.0@dev"
       }
    }
 
