@@ -89,6 +89,13 @@ $tasksService->create($task);
 ```
 
 This is just some simple things you can do with the SDK. Whant more? please just read our [documentation](http://wunderlist.readthedocs.org/)
+
+## Integrations
+
+ - (Silex service provider)[https://github.com/italolelis/wunderlist-provider]
+ - (Silex Wunderlist Skeleton)[https://github.com/italolelis/silex-wunderlist-skeleton]
+ - (Symfony WunderlistBundle)[https://github.com/italolelis/wunderlist-bundle]
+
 ## Contributing
 
 Please see [CONTRIBUTING](https://github.com/italolelis/wunderlist/blob/master/CONTRIBUTING.md) for details.
