@@ -31,7 +31,7 @@ Lets register *silex-oauth* and *wunderist-provider*:
 
     // app.php
     $app->register(new Gigablah\Silex\OAuth\OAuthServiceProvider());
-    $app->register(new Silex\Provider\WunderlistProvider());
+    $app->register(new Wunderlist\Silex\Provider\WunderlistServiceProvider());
 
 Configure both services:
 
