@@ -2,9 +2,9 @@
 
 namespace Wunderlist\OAuth;
 
-use OAuth\Service\Wunderlist;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Wunderlist\OAuth\Service\Wunderlist;
 
 /**
  * Responsible for authenticating on the API.

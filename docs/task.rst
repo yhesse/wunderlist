@@ -8,7 +8,7 @@ Create an instance of the Tasks service
 
 .. code-block:: php
 
-$tasksService = $wunderlist->getTasks();
+    $tasksService = $wunderlist->getTasks();
 
 Get completed tasks for a list
 
