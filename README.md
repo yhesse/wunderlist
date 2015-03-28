@@ -92,9 +92,9 @@ This is just some simple things you can do with the SDK. Whant more? please just
 
 ## Integrations
 
- - (Silex service provider)[https://github.com/italolelis/wunderlist-provider]
- - (Silex Wunderlist Skeleton)[https://github.com/italolelis/silex-wunderlist-skeleton]
- - (Symfony WunderlistBundle)[https://github.com/italolelis/wunderlist-bundle]
+ - [Silex service provider](https://github.com/italolelis/wunderlist-provider)
+ - [Silex Wunderlist Skeleton](https://github.com/italolelis/silex-wunderlist-skeleton)
+ - [Symfony WunderlistBundle](https://github.com/italolelis/wunderlist-bundle)
 
 ## Contributing
 
