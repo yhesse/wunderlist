@@ -66,6 +66,8 @@ $lists->map(function($list) {
 Ok, now lets create a task for a list
 
 ```php
+<?php
+
 use Wunderlist\Entity\WList;
 use Wunderlist\Entity\Task;
 

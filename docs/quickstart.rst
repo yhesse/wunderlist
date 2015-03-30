@@ -6,17 +6,93 @@ This page provides a quick introduction to Wunderlist PHP SDK and introductory e
 If you have not already installed, Wunderlist PHP SDK, head over to the :ref:`installation`
 page.
 
-Sync
-----
+The SDK is pretty simple to use, here is an example of how we can access all lists:
 
-You can completely synchronize a local copy of the Wunderlist data model with the Wunderlist API by checking
-the root revision property, descending if necessary, and repeating the process for each leaf in the tree.
-When a russian doll sync occurs on a client, the following rules apply:
-Fetched revision values and data should not be committed to local models and persistence layers unless child
-resources are successfully fetched. This means you should not update the child-revision of the parent until
-all child data has been successfully fetched. E.g. you should not apply list data and revision changes unless
-all tasks were fetched successfully, etc.
-Deleted items can be found by comparing your local data to the data retrieved during a russian doll sync and
-comparing for missing ids. However, since tasks may be moved to another list, you should mark a task as
-missing and only delete it if it is not present in any lists when the russian doll sync has completed
-successfully. This pattern can be extended to any model type that is “moveable”.
+.. code-block:: ph
+
+    <?php
+
+    use Wunderlist\Entity\WList;
+    use Wunderlist\ClientBuilder;
+
+    // Instanciate wunderlist API manager
+    $builder = new ClientBuilder();
+    $wunderlist = $builder->build('yourClientId', 'yourClientSecret', 'http://domain.com/oauth/callback');
+
+    //Here we get all lists for the authenticated user
+    $lists = $wunderlist->getService(WList::class)->all();
+
+    //For each list on the lists
+    $lists->map(function($list) {
+        echo $list->getTitle();
+    });
+
+
+What about all taks for a list?
+
+.. code-block:: ph
+
+    <?php
+
+    use Wunderlist\Entity\Task;
+    use Wunderlist\Entity\WList;
+
+    //Here we get all lists for the authenticated user
+    $lists = $wunderlist->getService(WList::class)->all();
+
+    //For each list on the lists
+    $lists->map(function($list) {
+        $tasks = wunderlist->getService(Task::class)->forList($list);
+        $tasks->map(function($task){
+            echo $task->getTitle();
+        });
+    });
+
+
+Ok, now lets create a task for a list
+
+.. code-block:: php
+    <?php
+
+    use Wunderlist\Entity\WList;
+    use Wunderlist\Entity\Task;
+
+    //Here we get all lists for the authenticated user
+    $lists = $wunderlist->getService(WList::class)->all();
+
+    //We get the first list
+    $list = $lists->first();
+
+    $task = new Task();
+    $task->setListID($list->getId())
+        ->setTitle('Test Hello');
+
+    $wunderlist->save($task);
+
+
+This is just some simple things you can do with the SDK. Whant more? please just read our [documentation](http://wunderlist.readthedocs.org/)
+
+
+Requests
+========
+
+By default all requests made to the API are syncronous, this is because we use the *GuzzleAdapter*.
+But if you want to make asyncronous request you need to change the adapter *AsyncGuzzleAdapter*, this
+will allow to make calls like this:
+
+.. code-block:: php
+
+     $service = $wunderlist->getService(WList::class);
+     $service->all()->done(function($lists){
+            $lists->map(function($list){
+                echo $list->getTitle();
+            });
+     });
+
+To change the default HttpClient adapter just change on *ClientBuilder*:
+
+.. code-block:: php
+
+    $builder = new Wunderlist\ClientBuilder();
+    $wunderlist = $builder->setHttpClient(Wunderlist\Http\AsyncGuzzleAdapter::class)
+                          ->build();
