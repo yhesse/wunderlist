@@ -2,6 +2,8 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 class Note implements IdentifiableInterface
 {
     use Revisionable,
@@ -10,29 +12,31 @@ class Note implements IdentifiableInterface
 
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $taskID;
+    protected $taskId;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $content;
 
     /**
      * @return int
      */
-    public function getTaskID()
+    public function getTaskId()
     {
-        return $this->taskID;
+        return $this->taskId;
     }
 
     /**
-     * @param int $taskID
+     * @param int $taskId
      * @return $this
      */
-    public function setTaskID($taskID)
+    public function setTaskId($taskId)
     {
-        $this->taskID = $taskID;
+        $this->taskId = $taskId;
         return $this;
     }
 

@@ -24,26 +24,17 @@ composer require italolelis/wunderlist
 The SDK is pretty simple to use, here is an example of how we can access all lists:
 
 ```php
+<?php
 
-// This is necessary for PHPoAuthLib authentication
-$credentials = new Credentials(
-    'yourClientId',
-    'yourClientSecret',
-    'http://domain.com/oauth/callback'
-);
-$wunderlistAuthService = new OAuth\Service\Wunderlist($credentials);
-
-// We need to instaciate the PHPoAuthLib strategy
-$wunderlistAuthenticator = new Wunderlist\OAuth\OAuthLibAuthentication($credentials);
+use Wunderlist\Entity\WList;
+use Wunderlist\ClientBuilder;
 
 // Instanciate wunderlist API manager
-$wunderlist = new \Wunderlist\Wunderlist($wunderlistAuthenticator);
-
-//Here we get the lists service, we did not get the lists yet
-$listsService = $wunderlist->getLists();
+$builder = new ClientBuilder();
+$wunderlist = $builder->build('yourClientId', 'yourClientSecret', 'http://domain.com/oauth/callback');
 
 //Here we get all lists for the authenticated user
-$lists = $listsService->all();
+$lists = $wunderlist->getService(WList::class)->all();
 
 //For each list on the lists
 $lists->map(function($list) {
@@ -55,37 +46,40 @@ $lists->map(function($list) {
 What about all taks for a list?
 
 ```php
-$tasksService = $wunderlist->getTasks();
+<?php
+
+use Wunderlist\Entity\Task;
+use Wunderlist\Entity\WList;
 
 //Here we get all lists for the authenticated user
-$lists = $listsService->all();
+$lists = $wunderlist->getService(WList::class)->all();
 
 //For each list on the lists
 $lists->map(function($list) {
-    $tasks = $tasksService->forList($list);
+    $tasks = wunderlist->getService(Task::class)->forList($list);
     $tasks->map(function($task){
         echo $task->getTitle();
     });
 });
-
 ```
 
 Ok, now lets create a task for a list
 
 ```php
-$tasksService = $wunderlist->getTasks();
+use Wunderlist\Entity\WList;
+use Wunderlist\Entity\Task;
 
 //Here we get all lists for the authenticated user
-$lists = $listsService->all();
+$lists = $wunderlist->getService(WList::class)->all();
 
 //We get the first list
 $list = $lists->first();
 
-$task = new \Wunderlist\Entity\Task();
+$task = new Task();
 $task->setListID($list->getId())
     ->setTitle('Test Hello');
 
-$tasksService->create($task);
+$wunderlist->save($task);
 ```
 
 This is just some simple things you can do with the SDK. Whant more? please just read our [documentation](http://wunderlist.readthedocs.org/)

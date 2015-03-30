@@ -2,6 +2,7 @@
 
 namespace Wunderlist\Service;
 
+use Collections\ArrayList;
 use Wunderlist\Entity\Subtask;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\WList;
@@ -19,8 +20,7 @@ class SubtaskService extends AbstractService
             'completed' => $completed
         ];
 
-        $data = $this->getItemsForAttributes($this->getBaseUrl(), $params);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->getItemsForAttributes($this->getBaseUrl(), $params, "ArrayCollection<{$this->type}>");
     }
 
     public function forTask(Task $task, $completed = false)
@@ -30,7 +30,6 @@ class SubtaskService extends AbstractService
             'completed' => $completed
         ];
 
-        $data = $this->getItemsForAttributes($this->getBaseUrl(), $params);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->getItemsForAttributes($this->getBaseUrl(), $params, "ArrayCollection<{$this->type}>");
     }
 }

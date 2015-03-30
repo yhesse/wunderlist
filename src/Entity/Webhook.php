@@ -2,6 +2,8 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 class Webhook implements IdentifiableInterface
 {
     use Revisionable,
@@ -10,31 +12,37 @@ class Webhook implements IdentifiableInterface
 
     /**
      * @var integer
+     * @Type("integer")
      */
     protected $listID;
 
     /**
      * @var integer
+     * @Type("integer")
      */
     protected $membershipID;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $membershipType;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $url;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $processorType;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $configuration;
 

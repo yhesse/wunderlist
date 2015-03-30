@@ -2,29 +2,31 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 class ListPosition extends AbstractPosition
 {
-
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $listID;
+    protected $listId;
 
     /**
      * @return int
      */
-    public function getListID()
+    public function getListId()
     {
-        return $this->listID;
+        return $this->listId;
     }
 
     /**
-     * @param int $listID
+     * @param int $listId
      * @return $this
      */
-    public function setListID($listID)
+    public function setListId($listId)
     {
-        $this->listID = $listID;
+        $this->listId = $listId;
         return $this;
     }
 }

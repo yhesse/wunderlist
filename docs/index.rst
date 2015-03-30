@@ -24,6 +24,10 @@ User guide
 
   overview
   quickstart
+  authentication
+  services
+  revisions
+  serviceManager
   list
   task
   membership

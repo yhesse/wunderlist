@@ -2,6 +2,8 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 abstract class AbstractTask implements IdentifiableInterface
 {
     use Revisionable,
@@ -10,67 +12,73 @@ abstract class AbstractTask implements IdentifiableInterface
 
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $taskID;
+    protected $taskId;
 
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $createdByID;
+    protected $createdById;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $title;
 
     /**
      * @var \DateTime
+     * @Type("DateTime<'Y-m-d\TH:i:s.uO'>")
      */
     protected $completedAt;
 
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $completedByID;
+    protected $completedById;
 
     /**
      * @var boolean
+     * @Type("boolean")
      */
     protected $completed;
 
     /**
      * @return integer
      */
-    public function getTaskID()
+    public function getTaskId()
     {
-        return $this->taskID;
+        return $this->taskId;
     }
 
     /**
-     * @param integer $taskID
+     * @param integer $taskId
      * @return $this
      */
-    public function setTaskID($taskID)
+    public function setTaskId($taskId)
     {
-        $this->taskID = $taskID;
+        $this->taskId = $taskId;
         return $this;
     }
 
     /**
      * @return integer
      */
-    public function getCreatedByID()
+    public function getCreatedById()
     {
-        return $this->createdByID;
+        return $this->createdById;
     }
 
     /**
-     * @param integer $createdByID
+     * @param integer $createdById
      * @return $this
      */
-    public function setCreatedByID($createdByID)
+    public function setCreatedById($createdById)
     {
-        $this->createdByID = $createdByID;
+        $this->createdById = $createdById;
         return $this;
     }
 
@@ -113,18 +121,18 @@ abstract class AbstractTask implements IdentifiableInterface
     /**
      * @return integer
      */
-    public function getCompletedByID()
+    public function getCompletedById()
     {
-        return $this->completedByID;
+        return $this->completedById;
     }
 
     /**
-     * @param integer $completedByID
+     * @param integer $completedById
      * @return $this
      */
-    public function setCompletedByID($completedByID)
+    public function setCompletedById($completedById)
     {
-        $this->completedByID = $completedByID;
+        $this->completedById = $completedById;
         return $this;
     }
 

@@ -2,6 +2,8 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 abstract class AbstractPosition implements IdentifiableInterface
 {
     use Revisionable,
@@ -10,11 +12,13 @@ abstract class AbstractPosition implements IdentifiableInterface
 
     /**
      * @var array
+     * @Type("array")
      */
     protected $values;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $type;
 

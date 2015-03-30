@@ -2,10 +2,10 @@
 
 namespace Wunderlist\Service;
 
-use Wunderlist\Entity\SubtaskPosition;
+use Wunderlist\Entity\ListPosition;
 
 class ListPositionService extends AbstractService
 {
     protected $baseUrl = 'list_positions';
-    protected $type = SubtaskPosition::class;
+    protected $type = ListPosition::class;
 }

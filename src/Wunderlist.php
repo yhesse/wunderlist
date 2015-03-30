@@ -3,6 +3,11 @@
 namespace Wunderlist;
 
 use Collections\Dictionary;
+use Wunderlist\Entity\IdentifiableInterface;
+use Wunderlist\Entity\Task;
+use Wunderlist\Entity\User;
+use Wunderlist\Entity\WList;
+use Wunderlist\Http\HttpClientInterface;
 use Wunderlist\OAuth\AuthenticationInterface;
 use Wunderlist\Service\AvatarService;
 use Wunderlist\Service\ListPositionService;
@@ -32,51 +37,104 @@ class Wunderlist
     protected $services;
 
     /**
-     * @var AuthenticationService
+     * @var AuthenticationInterface
      */
     protected $authenticationService;
 
     /**
-     * @var ApiClient
+     * @var HttpClientInterface
      */
     protected $client;
 
-    public function __construct(AuthenticationInterface $authenticationService)
+    public function __construct(AuthenticationInterface $authenticationService, HttpClientInterface $client)
     {
         $this->authenticationService = $authenticationService;
         $this->services = new Dictionary();
-        $this->client = new ApiClient();
+        $this->client = $client;
         $this->registerDefaultServices($this->client);
     }
 
-    protected function registerDefaultServices(ApiClient $client)
+    /**
+     * @param $service
+     * @return ServiceInterface
+     */
+    public function getService($service)
     {
-        $this->registerService('lists', new ListService($client))
-            ->registerService('memberships', new MembershipService($client))
-            ->registerService('tasks', new TaskService($client))
-            ->registerService('subtasks', new SubtaskService($client))
-            ->registerService('subtaskPositions', new SubtaskPositionService($client))
-            ->registerService('taskPositions', new TaskPositionService($client))
-            ->registerService('listPositions', new ListPositionService($client))
-            ->registerService('notes', new NoteService($client))
-            ->registerService('reminders', new ReminderService($client))
-            ->registerService('taskComments', new TaskCommentsService($client))
-            ->registerService('webhooks', new WebhookService($client))
-            ->registerService('avatars', new AvatarService($client))
-            ->registerService('users', new UserService($client))
-            ->registerService('tasksCounts', new TaskCountService($client));
+        //Lazy authentication
+        $token = $this->authenticationService->getAccessToken();
+        if (!$token->getAccessToken()) {
+            $this->authenticationService->authorize();
+        }
+
+        $this->client->createClient($this->authenticationService->getConsumerId(), $token->getAccessToken());
+        return $this->services->get($service);
+    }
+
+    public function find($entity, $id)
+    {
+        return $this->getService($entity)->getID($id);
+    }
+
+    public function forUser($entity, User $user)
+    {
+        return $this->getService($entity)->forUser($user);
+    }
+
+    public function forTask($entity, Task $task)
+    {
+        return $this->getService($entity)->forTask($task);
+    }
+
+    public function forList($entity, WList $list)
+    {
+        return $this->getService($entity)->forList($list);
+    }
+
+    /**
+     * @param IdentifiableInterface $entity The entity to be saved
+     * @return ServiceInterface
+     */
+    public function save(IdentifiableInterface $entity)
+    {
+        $service = $this->getService(get_class($entity));
+        if ($entity->getId()) {
+            return $service->update($entity);
+        }
+        return $service->create($entity);
+    }
+
+    public function delete(IdentifiableInterface $entity)
+    {
+        return $this->getService(get_class($entity))->delete($entity);
+    }
+
+    protected function registerDefaultServices(HttpClientInterface $client)
+    {
+        $this->registerService(new ListService($client))
+            ->registerService(new MembershipService($client))
+            ->registerService(new TaskService($client))
+            ->registerService(new SubtaskService($client))
+            ->registerService(new SubtaskPositionService($client))
+            ->registerService(new TaskPositionService($client))
+            ->registerService(new ListPositionService($client))
+            ->registerService(new NoteService($client))
+            ->registerService(new ReminderService($client))
+            ->registerService(new TaskCommentsService($client))
+            ->registerService(new WebhookService($client))
+            ->registerService(new AvatarService($client))
+            ->registerService(new UserService($client))
+            ->registerService(new TaskCountService($client));
     }
 
     /**
      * Register a service
-     * @param string $name The service name
      * @param ServiceInterface $service The service object
      * @return $this
      * @throws \Collections\Exception\KeyException
      */
-    public function registerService($name, ServiceInterface $service)
+    public function registerService(ServiceInterface $service)
     {
-        $this->services->add($name, $service);
+        $this->services->add($service->getType(), $service);
         return $this;
     }
 
@@ -89,144 +147,5 @@ class Wunderlist
     {
         $this->services->remove($name);
         return $this;
-    }
-
-    /**
-     * Gets a service by it's name
-     * @param string $service The service name
-     * @return ServiceInterface
-     */
-    public function get($service)
-    {
-        //Lazy authentication
-        $token = $this->authenticationService->getAccessToken();
-        if (!$token->getAccessToken()) {
-            $this->authenticationService->authorize();
-        }
-
-        $this->client->createGuzzle($this->authenticationService->getConsumerId(), $token->getAccessToken());
-        return $this->services->get($service);
-    }
-
-    /**
-     * @return AuthenticationService
-     */
-    public function getAuthentication()
-    {
-        return $this->authenticationService;
-    }
-
-    /**
-     * @param AuthenticationService $authenticationService
-     * @return $this
-     */
-    public function setAuthenticationService($authenticationService)
-    {
-        $this->authenticationService = $authenticationService;
-        return $this;
-    }
-
-    /**
-     * @return ListService
-     */
-    public function getLists()
-    {
-        return $this->get('lists');
-    }
-
-    /**
-     * @return TaskService
-     */
-    public function getTasks()
-    {
-        return $this->get('tasks');
-    }
-
-    /**
-     * @return TaskCountService
-     */
-    public function getTaskCounts()
-    {
-        return $this->get('tasksCounts');
-    }
-
-    /**
-     * @return MembershipService
-     */
-    public function getMemberships()
-    {
-        return $this->get('memberships');
-    }
-
-    /**
-     * @return SubtaskService
-     */
-    public function getSubtasks()
-    {
-        return $this->get('subtasks');
-    }
-
-    /**
-     * @return ListPositionService
-     */
-    public function getListPosition()
-    {
-        return $this->get('listPositions');
-    }
-
-    /**
-     * @return SubtaskPositionService
-     */
-    public function getSubtaskPosition()
-    {
-        return $this->get('subtaskPositions');
-    }
-
-    /**
-     * @return TaskPositionService
-     */
-    public function getTaskPosition()
-    {
-        return $this->get('taskPositions');
-    }
-
-    /**
-     * @return AvatarService
-     */
-    public function getAvatar()
-    {
-        return $this->get('avatars');
-    }
-
-    /**
-     * @return NoteService
-     */
-    public function getNotes()
-    {
-        return $this->get('notes');
-    }
-
-    /**
-     * @return ReminderService
-     */
-    public function getReminders()
-    {
-        return $this->get('reminders');
-    }
-
-    /**
-     * @return WebhookService
-     */
-    public function getWebhooks()
-    {
-        return $this->get('webhooks');
-    }
-
-    /**
-     * @return UserService
-     */
-    public function getUser()
-    {
-        return $this->get('users');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
 
 class Membership implements IdentifiableInterface
 {
@@ -9,46 +10,75 @@ class Membership implements IdentifiableInterface
         Identifiable,
         Timestampable;
 
-    protected $userID;
-    protected $listID;
+    /**
+     * @var integer
+     * @Type("integer")
+     */
+    protected $userId;
+
+    /**
+     * @var integer
+     * @Type("integer")
+     */
+    protected $listId;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $state;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $type;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $owner;
+
+    /**
+     * @var boolean
+     * @Type("boolean")
+     */
     protected $muted;
 
     /**
      * @return mixed
      */
-    public function getUserID()
+    public function getUserId()
     {
-        return $this->userID;
+        return $this->userId;
     }
 
     /**
-     * @param mixed $userID
+     * @param mixed $userId
      * @return $this
      */
-    public function setUserID($userID)
+    public function setUserId($userId)
     {
-        $this->userID = $userID;
+        $this->userId = $userId;
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getListID()
+    public function getListId()
     {
-        return $this->listID;
+        return $this->listId;
     }
 
     /**
-     * @param mixed $listID
+     * @param mixed $listId
      * @return $this
      */
-    public function setListID($listID)
+    public function setListId($listId)
     {
-        $this->listID = $listID;
+        $this->listId = $listId;
         return $this;
     }
 

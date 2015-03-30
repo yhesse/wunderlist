@@ -4,10 +4,9 @@ namespace Wunderlist\Service;
 
 use Carbon\Carbon;
 use Collections\ArrayList;
-use Doctrine\Common\Collections\ArrayCollection;
-use Wunderlist\ApiClient;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\WList;
+use Wunderlist\Http\HttpClientInterface;
 
 class TaskService extends AbstractService
 {
@@ -16,7 +15,7 @@ class TaskService extends AbstractService
     protected $baseUrl = 'tasks';
     protected $type = Task::class;
 
-    public function __construct(ApiClient $client)
+    public function __construct(HttpClientInterface $client)
     {
         parent::__construct($client);
         $this->userService = new UserService($client);
@@ -31,8 +30,7 @@ class TaskService extends AbstractService
             'completed' => $completed
         ];
 
-        $data = $this->getItemsForAttributes($this->getBaseUrl(), $data);
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->getItemsForAttributes($this->getBaseUrl(), $data, "ArrayCollection<{$this->type}>");
     }
 
     public function all(WList $list)
@@ -42,7 +40,7 @@ class TaskService extends AbstractService
 
     public function allWithSubtasks(WList $list)
     {
-        $tasks = new ArrayCollection($this->all($list));
+        $tasks = new ArrayList($this->all($list));
         $tasksWithSubtaks = $tasks->map(function (Task $task) {
             return $task->setSubtasks($this->subtaskService->forTask($task));
         });

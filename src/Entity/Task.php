@@ -3,31 +3,37 @@
 namespace Wunderlist\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation\Type;
 
 class Task extends AbstractTask
 {
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $assigneeID;
+    protected $assigneeId;
 
     /**
      * @var \DateTime
+     * @Type("DateTime<'Y-m-d\TH:i:s.uO'>")
      */
     protected $dueDate;
 
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $listID;
+    protected $listId;
 
     /**
      * @var boolean
+     * @Type("boolean")
      */
     protected $starred;
 
     /**
      * @var ArrayCollection
+     * @Type("ArrayCollection<Wunderlist\Entity\Subtask>")
      */
     protected $subtasks;
 
@@ -39,36 +45,36 @@ class Task extends AbstractTask
     /**
      * @return integer
      */
-    public function getAssigneeID()
+    public function getAssigneeId()
     {
-        return $this->assigneeID;
+        return $this->assigneeId;
     }
 
     /**
-     * @param integer $assigneeID
+     * @param integer $assigneeId
      * @return $this
      */
-    public function setAssigneeID($assigneeID)
+    public function setAssigneeId($assigneeId)
     {
-        $this->assigneeID = $assigneeID;
+        $this->assigneeId = $assigneeId;
         return $this;
     }
 
     /**
      * @return integer
      */
-    public function getListID()
+    public function getListId()
     {
-        return $this->listID;
+        return $this->listId;
     }
 
     /**
-     * @param integer $listID
+     * @param integer $listId
      * @return $this
      */
-    public function setListID($listID)
+    public function setListId($listId)
     {
-        $this->listID = $listID;
+        $this->listId = $listId;
         return $this;
     }
 

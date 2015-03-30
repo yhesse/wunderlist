@@ -2,8 +2,9 @@
 
 namespace Wunderlist\Service;
 
-use Wunderlist\ApiClient;
 use Wunderlist\Entity\Membership;
+use Wunderlist\Http\AsyncGuzzleAdapter;
+use Wunderlist\Http\HttpClientInterface;
 
 class MembershipService extends AbstractService
 {
@@ -11,7 +12,7 @@ class MembershipService extends AbstractService
     protected $baseUrl = 'memberships';
     protected $type = Membership::class;
 
-    public function __construct(ApiClient $client)
+    public function __construct(HttpClientInterface $client)
     {
         parent::__construct($client);
         $this->userService = new UserService($client);
@@ -19,12 +20,16 @@ class MembershipService extends AbstractService
 
     public function all()
     {
-        $data = $this->get($this->getBaseUrl());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->get($this->getBaseUrl(), "ArrayCollection<{$this->type}>");
     }
 
     public function mine()
     {
+        if ($this->client instanceof AsyncGuzzleAdapter) {
+            return $this->userService->current()->then(function ($user) {
+                return $this->forUser($user);
+            });
+        }
         $user = $this->userService->current();
         return $this->forUser($user);
     }
@@ -35,24 +40,28 @@ class MembershipService extends AbstractService
             'list_id' => $list,
             'user_id' => $user,
             'muted' => $muted
-        ]);
+        ], '\stdClass');
     }
 
-    public function acceptMember($id, $revision, $muted = false)
+    public function acceptMember(Membership $membership, $muted = false)
     {
-        return $this->post($this->getBaseUrl(), $id, [
-            'revision' => $revision,
-            'state' => 'accepted',
-            'muted' => $muted
-        ]);
+        return $this->post($this->getBaseUrl() . '/' . $membership->getId(), [
+            'json' => [
+                'revision' => $membership->getRevision(),
+                'state' => 'accepted',
+                'muted' => $muted
+            ]
+        ], '\stdClass');
     }
 
-    public function rejectMember($id, $revision, $muted = false)
+    public function rejectMember(Membership $membership, $muted = false)
     {
-        return $this->delete($this->getBaseUrl(), $id, [
-            'revision' => $revision,
-            'state' => 'accepted',
-            'muted' => $muted
+        return $this->delete($membership, [
+            'json' => [
+                'revision' => $membership->getRevision(),
+                'state' => 'rejected',
+                'muted' => $muted
+            ]
         ]);
     }
 }

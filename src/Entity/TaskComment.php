@@ -2,6 +2,8 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 class TaskComment implements IdentifiableInterface
 {
     use Revisionable,
@@ -10,34 +12,37 @@ class TaskComment implements IdentifiableInterface
 
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $taskID;
+    protected $taskId;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $text;
 
     /**
      * @var string
+     * @Type("string")
      */
     protected $type;
 
     /**
      * @return int
      */
-    public function getTaskID()
+    public function getTaskId()
     {
-        return $this->taskID;
+        return $this->taskId;
     }
 
     /**
-     * @param int $taskID
+     * @param int $taskId
      * @return $this
      */
-    public function setTaskID($taskID)
+    public function setTaskID($taskId)
     {
-        $this->taskID = $taskID;
+        $this->taskId = $taskId;
         return $this;
     }
 

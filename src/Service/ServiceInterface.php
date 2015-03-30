@@ -22,12 +22,29 @@ interface ServiceInterface
     public function getBaseUrl();
 
     /**
+     * Gets the supported type for the service
+     * @return string
+     */
+    public function getType();
+
+    /**
      * Makes a GET request to the API
      * @param string $resource The path to make the request
+     * @param string $type The deserialization class name
      * @param array $options Guzzle options for the request
      * @return mixed
      */
-    public function get($resource, $options = []);
+    public function get($resource, $type, array $options = []);
+
+    /**
+     * Creates a POST request to the API
+     * @param string $resource The path to make the request
+     * @param array $data $data to be send
+     * @param string $type The deserialization class name
+     * @param array $options Guzzle options for the request
+     * @return mixed
+     */
+    public function post($resource, $data, $type, array $options = []);
 
     /**
      * Creates an entity at the API
@@ -35,7 +52,7 @@ interface ServiceInterface
      * @param array $options Guzzle options for the request
      * @return object
      */
-    public function create($entity, $options = []);
+    public function create($entity, array $options = []);
 
     /**
      * Updates an entity at the API
@@ -43,16 +60,17 @@ interface ServiceInterface
      * @param array $options Guzzle options for the request
      * @return object
      */
-    public function update(IdentifiableInterface $entity, $options = []);
+    public function update(IdentifiableInterface $entity, array $options = []);
 
     /**
      * Updates only certain fields at the API
      * @param int $id The resource id
      * @param array $data The data to be updated
+     * @param string $type The deserialization class name
      * @param array $options Guzzle options for the request
      * @return object
      */
-    public function patch($id, $data, $options = []);
+    public function patch($id, $data, $type, array $options = []);
 
     /**
      * Deletes an entity from the API
@@ -60,7 +78,7 @@ interface ServiceInterface
      * @param array $options Guzzle options for the request
      * @return object
      */
-    public function delete(IdentifiableInterface $entity, $options = []);
+    public function delete(IdentifiableInterface $entity, array $options = []);
 
     /**
      * Gets a entity base on the ID.

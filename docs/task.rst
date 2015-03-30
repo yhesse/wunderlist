@@ -2,60 +2,28 @@
 Tasks
 =====
 
-Provides methods for easy access to tasks data.
-
-Create an instance of the Tasks service
-
-.. code-block:: php
-
-    $tasksService = $wunderlist->getTasks();
-
-Get completed tasks for a list
-
-.. code-block:: php
-
-    $list = $listService->getID(777);
-    $lists = $tasksService->forList($list, true);
+Provides specifics methods for easy access to tasks data.
 
 Get today tasks
 
 .. code-block:: php
 
-    $todayTasks = $tasksService->today();
+    $todayTasks = $wunderlist->getService(Task::class)->today();
 
 Get overdue tasks
 
 .. code-block:: php
 
-    $overdueTasks = $tasksService->overdue();
+    $overdueTasks = $wunderlist->getService(Task::class)->overdue();
 
-Get a specific task
-
-.. code-block:: php
-
-    $task = $tasksService->getID(777);
-
-Create a task
+Get all tasks with its subtasks
 
 .. code-block:: php
 
-    $task = new Wunderlist\Entity\Task();
-    $task->setTitle('Call Jenny')
-        ->setListID(8675309);
-    $tasksService->create($task);
+    $tasks = $wunderlist->getService(Task::class)->allWithSubtasks();
 
-Update a task
+Filter tasks by date
 
 .. code-block:: php
 
-    $task = $tasksService->getID(777);
-    $task->setTitle('Change the world')
-        ->setStarred(true);
-    $tasksService->update($task);
-
-Delete a task
-
-.. code-block:: php
-
-    $task = $tasksService->getID(777);
-    $tasksService->delete($task);
+    $tasks = $wunderlist->getService(Task::class)->filterByDate(Carbon::now());

@@ -3,9 +3,9 @@
 namespace Wunderlist\Service;
 
 use Collections\ArrayList;
-use Wunderlist\ApiClient;
 use Wunderlist\Entity\Membership;
 use Wunderlist\Entity\WList;
+use Wunderlist\Http\HttpClientInterface;
 
 class ListService extends AbstractService
 {
@@ -13,7 +13,7 @@ class ListService extends AbstractService
     protected $baseUrl = 'lists';
     protected $type = WList::class;
 
-    public function __construct(ApiClient $client)
+    public function __construct(HttpClientInterface $client)
     {
         parent::__construct($client);
         $this->membershipService = new MembershipService($client);
@@ -21,8 +21,8 @@ class ListService extends AbstractService
 
     public function all()
     {
-        $data = $this->get($this->getBaseUrl());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        $data = $this->get($this->getBaseUrl(), "ArrayCollection<{$this->type}>");
+        return new ArrayList($data);
     }
 
     public function accepted()
@@ -46,14 +46,14 @@ class ListService extends AbstractService
 
     public function makePublic(WList $data)
     {
-        return $this->patch($this->getBaseUrl(), $data->getId(), [
+        return $this->patch($this->getBaseUrl() . '/' . $data->getId(), $this->type, [
             'public' => true
         ]);
     }
 
     public function makePrivate(WList $data)
     {
-        return $this->patch($this->getBaseUrl(), $data->getId(), [
+        return $this->patch($this->getBaseUrl() . '/' . $data->getId(), $this->type, [
             'public' => false
         ]);
     }

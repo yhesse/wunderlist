@@ -2,46 +2,24 @@
 Lists
 =====
 
-Provides methods for easy access to list data.
+Provides specifics methods for easy access to list data.
 
-Create an instance of the Lists service
-
-.. code-block:: php
-
-    $listsService = $wunderlist->getLists();
-
-Get all lists for a user
+Get all accepted lists
 
 .. code-block:: php
 
-    $user = $userService->current();
-    $lists = $listsService->forUser($user);
+    $acceptedLists = $wunderlist->getService(WList::class)->accepted();
 
-Get a specific list
-
-.. code-block:: php
-
-    $list = $listsService->getID(777);
-
-Create a list
+Make a list public
 
 .. code-block:: php
 
-    $list = new Wunderlist\Entity\List();
-    $list->setTitle('Bad Movies');
-    $listsService->create($list);
+    $list = $wunderlist->find(WList::class, 777);
+    $listsService->makePublic($list);
 
-Update a list
-
-.. code-block:: php
-
-    $list = $listsService->getID(777);
-    $list->setTitle('Good Bad Movies');
-    $listsService->update($list);
-
-Delete a list
+Make a list private
 
 .. code-block:: php
 
-    $list = $listsService->getID(777);
-    $listsService->delete($list);
+    $list = $wunderlist->find(WList::class, 777);
+    $listsService->makePrivate($list);

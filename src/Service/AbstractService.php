@@ -2,14 +2,12 @@
 
 namespace Wunderlist\Service;
 
-use Collections\ArrayList;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\SerializerBuilder;
-use Wunderlist\ApiClient;
 use Wunderlist\Entity\IdentifiableInterface;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\User;
 use Wunderlist\Entity\WList;
+use Wunderlist\Http\HttpClientInterface;
 
 /**
  * Contains the basic implementations for an API service.
@@ -31,32 +29,21 @@ abstract class AbstractService implements ServiceInterface
     protected $type;
 
     /**
-     * @var ApiClient
+     * @var HttpClientInterface
      */
     protected $client;
 
-    /**
-     * @var \JMS\Serializer\Serializer
-     */
-    protected $serializer;
-
-    public function __construct(ApiClient $client)
+    public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
-        $this->serializer = SerializerBuilder::create()
-            ->setCacheDir(__DIR__ . '/../../var/cache')
-            ->addMetadataDir(__DIR__ . '/../Resources/serializer')
-            ->build();
     }
 
-    public function serialize($data)
+    /**
+     * @return string
+     */
+    public function getType()
     {
-        return $this->serializer->serialize($data, 'json');
-    }
-
-    public function deserialize($data, $type)
-    {
-        return $this->serializer->deserialize($data, $type, 'json');
+        return $this->type;
     }
 
     /**
@@ -67,53 +54,52 @@ abstract class AbstractService implements ServiceInterface
         return $this->baseUrl;
     }
 
-    public function get($resource, $options = [])
+    public function get($resource, $type, array $options = [])
     {
-        return $this->client->get($resource, $options);
+        return $this->client->get($resource, $type, $options);
     }
 
-    public function create($entity, $options = [])
+    public function create($entity, array $options = [])
     {
-        $jsonContent = $this->serializer->serialize($entity, 'json');
-        $result = $this->client->post($this->getBaseUrl(), $jsonContent, $options);
-        return $this->deserialize($result, $this->type);
+        return $this->client->post($this->getBaseUrl(), $entity, get_class($entity), $options);
     }
 
-    public function update(IdentifiableInterface $entity, $options = [])
+    public function post($resource, $data, $type, array $options = [])
     {
-        $jsonContent = $this->serializer->serialize($entity, 'json');
-        $result = $this->client->put($this->getBaseUrl(), $entity->getId(), $jsonContent, $options);
-        return $this->deserialize($result, $this->type);
+        return $this->client->post($this->getBaseUrl(), $data, $type, $options);
     }
 
-    public function patch($id, $data, $options = [])
+    public function update(IdentifiableInterface $entity, array $options = [])
     {
-        $result = $this->client->patch($this->getBaseUrl(), $id, $data, $options);
-        return $this->deserialize($result, $this->type);
+        return $this->client->put($this->getBaseUrl() . '/' . $entity->getId(), $entity, $options);
     }
 
-    public function delete(IdentifiableInterface $entity, $options = [])
+    public function patch($id, $data, $type, array $options = [])
     {
-        return $this->client->delete($this->getBaseUrl(), $entity, $options);
+        return $this->client->patch($this->getBaseUrl() . '/' . $id, $data, $type, $options);
+    }
+
+    public function delete(IdentifiableInterface $entity, array $options = [])
+    {
+        return $this->client->delete($this->getBaseUrl() . '/' . $entity->getId(), $entity, $options);
     }
 
     public function getID($id)
     {
-        $data = $this->get($this->getBaseUrl() . '/' . $id);
-        return $this->deserialize($data, $this->type);
+        return $this->get($this->getBaseUrl() . '/' . $id, $this->type);
     }
 
-    protected function getItemsForAttribute($url, $attribute, $value)
+    protected function getItemsForAttribute($url, $attribute, $value, $type)
     {
         $data[$attribute] = $value;
-        return $this->get($url, [
+        return $this->get($url, $type, [
             'query' => $data
         ]);
     }
 
-    protected function getItemsForAttributes($url, $data)
+    protected function getItemsForAttributes($url, $data, $type)
     {
-        return $this->get($url, [
+        return $this->get($url, $type, [
             'query' => $data
         ]);
     }
@@ -125,8 +111,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function forUser(User $user)
     {
-        $data = $this->getItemsForAttribute($this->getBaseUrl(), 'user_id', $user->getId());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->getItemsForAttribute($this->getBaseUrl(), 'user_id', $user->getId(), "ArrayCollection<{$this->type}>");
     }
 
     /**
@@ -136,8 +121,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function forTask(Task $task)
     {
-        $data = $this->getItemsForAttribute($this->getBaseUrl(), 'task_id', $task->getId());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->getItemsForAttribute($this->getBaseUrl(), 'task_id', $task->getId(), "ArrayCollection<{$this->type}>");
     }
 
     /**
@@ -147,7 +131,6 @@ abstract class AbstractService implements ServiceInterface
      */
     public function forList(WList $list)
     {
-        $data = $this->getItemsForAttribute($this->getBaseUrl(), 'list_id', $list->getId());
-        return new ArrayList($this->deserialize($data, "ArrayCollection<{$this->type}>"));
+        return $this->getItemsForAttribute($this->getBaseUrl(), 'list_id', $list->getId(), "ArrayCollection<{$this->type}>");
     }
 }

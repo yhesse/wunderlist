@@ -2,13 +2,23 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 class User implements IdentifiableInterface
 {
     use Revisionable,
         Identifiable,
         Timestampable;
-
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $name;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $email;
 
 

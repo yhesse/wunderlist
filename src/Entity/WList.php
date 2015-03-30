@@ -2,6 +2,7 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
 
 class WList implements IdentifiableInterface
 {
@@ -9,8 +10,22 @@ class WList implements IdentifiableInterface
         Identifiable,
         Timestampable;
 
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $title;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $listType;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     protected $type;
 
     /**

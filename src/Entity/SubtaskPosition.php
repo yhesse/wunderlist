@@ -2,15 +2,19 @@
 
 namespace Wunderlist\Entity;
 
+use JMS\Serializer\Annotation\Type;
+
 class SubtaskPosition extends AbstractPosition
 {
     /**
      * @var integer
+     * @Type("integer")
      */
-    protected $taskID;
+    protected $taskId;
 
     /**
      * @var integer
+     * @Type("integer")
      */
     protected $listID;
 
@@ -35,18 +39,18 @@ class SubtaskPosition extends AbstractPosition
     /**
      * @return int
      */
-    public function getTaskID()
+    public function getTaskId()
     {
-        return $this->taskID;
+        return $this->taskId;
     }
 
     /**
-     * @param int $taskID
+     * @param int $taskId
      * @return $this
      */
-    public function setTaskID($taskID)
+    public function setTaskId($taskId)
     {
-        $this->taskID = $taskID;
+        $this->taskId = $taskId;
         return $this;
     }
 }

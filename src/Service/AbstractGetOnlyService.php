@@ -7,22 +7,22 @@ use Wunderlist\Exception\NotAllowedException;
 
 abstract class AbstractGetOnlyService extends AbstractService
 {
-    public function create($entity, $options = [])
+    public function create($entity, array $options = [])
     {
         throw new NotAllowedException(_('Method not allowed for this service.'));
     }
 
-    public function update(IdentifiableInterface $entity, $options = [])
+    public function update(IdentifiableInterface $entity, array $options = [])
     {
         throw new NotAllowedException(_('Method not allowed for this service.'));
     }
 
-    public function patch($id, $data, $options = [])
+    public function patch($id, $data, $type, array $options = [])
     {
         throw new NotAllowedException(_('Method not allowed for this service.'));
     }
 
-    public function delete(IdentifiableInterface $entity, $options = [])
+    public function delete(IdentifiableInterface $entity, array $options = [])
     {
         throw new NotAllowedException(_('Method not allowed for this service.'));
     }

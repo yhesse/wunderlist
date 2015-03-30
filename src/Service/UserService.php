@@ -11,13 +11,11 @@ class UserService extends AbstractService
 
     public function all()
     {
-        $data = $this->get($this->getBaseUrl());
-        return $this->deserialize($data, "ArrayCollection<{$this->type}>");
+        return $this->get($this->getBaseUrl(), "ArrayCollection<{$this->type}>");
     }
 
     public function current()
     {
-        $data = $this->get('user');
-        return $this->deserialize($data, $this->type);
+        return $this->get('user', $this->type);
     }
 }
