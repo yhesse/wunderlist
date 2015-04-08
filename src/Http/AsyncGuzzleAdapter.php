@@ -3,6 +3,7 @@
 namespace Wunderlist\Http;
 
 use Collections\ArrayList;
+use Guzzle\Http\Message\Response;
 use GuzzleHttp\Client;
 use JMS\Serializer\Serializer;
 
@@ -59,7 +60,7 @@ class AsyncGuzzleAdapter implements HttpClientInterface
     public function get($resource, $type, $options = [])
     {
         $options['future'] = true;
-        return $this->client->get($resource, $options)->then(function ($reponse) {
+        return $this->client->get($resource, $options)->then(function (Response $reponse) {
             return $reponse->getBody()->getContents();
         })->then(function ($content) use ($type) {
             return $this->deserialize($content, $type);
@@ -74,7 +75,7 @@ class AsyncGuzzleAdapter implements HttpClientInterface
         $options['headers'] = [
             'Content-Type' => 'application/json'
         ];
-        return $this->client->post($resource, $options)->then(function ($reponse) {
+        return $this->client->post($resource, $options)->then(function (Response $reponse) {
             return $reponse->getBody()->getContents();
         })->then(function ($content) use ($type) {
             return $this->deserialize($content, $type);
@@ -88,7 +89,7 @@ class AsyncGuzzleAdapter implements HttpClientInterface
         $options['headers'] = [
             'Content-Type' => 'application/json'
         ];
-        return $this->client->put($resource, $options)->then(function ($reponse) {
+        return $this->client->put($resource, $options)->then(function (Response $reponse) {
             return $reponse->getBody()->getContents();
         })->then(function ($content) use ($type) {
             return $this->deserialize($content, $type);
@@ -102,7 +103,7 @@ class AsyncGuzzleAdapter implements HttpClientInterface
         $options['headers'] = [
             'Content-Type' => 'application/json'
         ];
-        return $this->client->patch($resource, $options)->then(function ($reponse) {
+        return $this->client->patch($resource, $options)->then(function (Response $reponse) {
             return $reponse->getBody()->getContents();
         })->then(function ($content) use ($type) {
             return $this->deserialize($content, $type);
@@ -112,7 +113,7 @@ class AsyncGuzzleAdapter implements HttpClientInterface
     public function delete($resource, $type, $options = [])
     {
         $options['future'] = true;
-        return $this->client->delete($resource, $options)->then(function ($reponse) {
+        return $this->client->delete($resource, $options)->then(function (Response $reponse) {
             return $reponse->json();
         });
     }

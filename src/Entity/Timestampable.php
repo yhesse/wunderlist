@@ -2,19 +2,17 @@
 
 namespace Wunderlist\Entity;
 
-use JMS\Serializer\Annotation\Type;
-
 trait Timestampable
 {
     /**
      * @var \DateTime
-     * @Type("DateTime<'Y-m-d\TH:i:s.uO'>")
+     * @JMS\Serializer\Annotation\Type\Type("DateTime<'Y-m-d\TH:i:s.uO'>")
      */
     protected $createdAt;
 
     /**
      * @var \DateTime
-     * @Type("DateTime<'Y-m-d\TH:i:s.uO'>")
+     * @JMS\Serializer\Annotation\Type\Type("DateTime<'Y-m-d\TH:i:s.uO'>")
      */
     protected $updatedAt;
 

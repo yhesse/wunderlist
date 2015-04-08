@@ -2,7 +2,6 @@
 
 namespace Wunderlist\Service;
 
-use Collections\ArrayList;
 use Wunderlist\Entity\Subtask;
 use Wunderlist\Entity\Task;
 use Wunderlist\Entity\WList;

@@ -2,13 +2,11 @@
 
 namespace Wunderlist\Entity;
 
-use JMS\Serializer\Annotation\Type;
-
 trait Identifiable
 {
     /**
      * @var integer
-     * @Type("integer")
+     * @JMS\Serializer\Annotation\Type\Type("integer")
      */
     protected $id;
 
